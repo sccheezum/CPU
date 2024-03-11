@@ -147,6 +147,23 @@ module rotr_ops (
     end
 endmodule
 //Circuit 4: Rotate Left
+module rotl_ops (
+    input [19:0] a, 
+    output reg [19:0] out
+);
+
+    integer i;
+
+    always @(r) begin 
+    //Setting the first value of the input to the last value of the output
+        out[0] = a[19];
+
+    //Iterating through the rest of the input
+        for (i = 0; i < 19; i++)begin
+            out[i] = a[i+1];
+        end
+    end
+endmodule
 //Circuit 5: Swap (Exchange)
 
 
