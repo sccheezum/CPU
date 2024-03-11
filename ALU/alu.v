@@ -186,7 +186,7 @@ endmodule
 //                COMPARISON CLASS OF OPERATIONS              //
 ///////////////////////////////////////////////////////////////
 
-//Circuit 1: Equal Than
+//Circuit 1: Equal To
 module eq_ops (
     input [19:0] a,
     input [19:0] b,
