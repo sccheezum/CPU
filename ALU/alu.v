@@ -6,6 +6,19 @@ Ursinus College
 @purpose Implementation of ALU
 */
 
+////////////////////////////////////////////////////////////
+//                     PROGRAM FLOWS                      //
+///////////////////////////////////////////////////////////
+
+//Circuit 1: Trap Mode
+//Circuit 2: No Operation 
+//Circuit 3: Jump Unconditional
+//Circuit 4: Jump Zero
+//Circuit 5: Jump Sign
+//Circuit 6: Jump Zero-Sign
+//Circuit 7: Load Status Register
+//Circuit 8: XOR Status Register
+
 
 ////////////////////////////////////////////////////////////
 //               LOGIC CLASS OF OPERATIONS               //
