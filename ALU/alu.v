@@ -155,7 +155,7 @@ module rotl_ops (
     integer i;
 
     always @(r) begin 
-    //Setting the first value of the input to the last value of the output
+    //Setting the last value of the input to the last value of the output
         out[0] = a[19];
 
     //Iterating through the rest of the input
