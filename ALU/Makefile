@@ -5,7 +5,7 @@
 # @purpose: Demonstrate the implementation of simple operations
 
 
-TESTBENCH=alu_tb
+TESTBENCH = alu_tb
 
 all:
 	iverilog -o $(TESTBENCH).vvp $(TESTBENCH).v
