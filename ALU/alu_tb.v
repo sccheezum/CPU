@@ -25,6 +25,5 @@ module not_ops_tb;
         .c(c),
         .zero(zero)
     );
-
-
+//Fill in with necessary test conditions:
 endmodule
