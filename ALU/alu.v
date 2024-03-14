@@ -33,7 +33,7 @@ module not_ops (
 
    integer i;
 
-   always @(a or b) begin
+   always @(a) begin
       for (i = 0; i < 20; i++) begin
          c[i] = ~a[i];
       end
