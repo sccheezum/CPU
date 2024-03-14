@@ -162,7 +162,7 @@ endmodule
 //               BIT SHIFT CLASS OF OPERATIONS               //
 ///////////////////////////////////////////////////////////////
 
-//Circuit 1: Shift Right (Courtesy of Isabelle taken from "isabelle_circuits.v")
+//Circuit 1: Shift Right
 module shftr_ops_tb;
     reg clk;
     reg [19:0] a;
@@ -192,3 +192,33 @@ module shftr_ops_tb;
     end
 
 endmodule
+//Circuit 2: Shift Left
+module shftl_ops_tb;
+    reg clk;
+    reg [19:0] a;
+    wire [19:0] out;
+    wire carry;
+    wire zero;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+
+    shftl_ops x0 (
+        .a(a),
+        .out(out),
+        .carry(carry),
+        .zero(zero)
+    );
+
+    initial begin
+        a <= 0;
+        $monitor ("a: %b - out: %b - carry: %b - zero: %b", a, out, carry, zero);
+
+        for (i = 0; i < MAX_ITERS; i++)begin
+            #10 clk <= ~clk;
+                a <= $urandom(SEED);
+        end
+    end
+endmodule
+//Circuit 3: Rotate Right

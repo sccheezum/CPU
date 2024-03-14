@@ -128,6 +128,26 @@ module shftr_ops (
 
 endmodule
 //Circuit 2: Shift Left
+module shftl_ops (
+    input [19:0] a,
+    output reg [19:0] out,
+    output reg carry,
+    output reg zero
+);
+
+    integer i;
+
+    always @(a) begin
+        carry = a[0];
+        out[19] = 0;
+        for (i = 19; i > 0; i--) begin
+            out[i-1] = a[i];
+        end
+
+        zero = !(|out);
+    end
+
+endmodule
 //Circuit 3: Rotate Right
 module rotr_ops (
     input [19:0] a, 
