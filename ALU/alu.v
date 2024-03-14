@@ -127,6 +127,7 @@ module shftr_ops (
     end
 
 endmodule
+
 //Circuit 2: Shift Left
 module shftl_ops (
     input [19:0] a,
@@ -148,26 +149,9 @@ module shftl_ops (
     end
 
 endmodule
+
 //Circuit 3: Rotate Right
 module rotr_ops (
-    input [19:0] a, 
-    output reg [19:0] out
-);
-
-    integer i;
-
-    always @(a) begin 
-    //Setting the first value of the input to the last value of the output
-        out[19] = a[0];
-
-    //Iterating through the rest of the input
-        for (i = 0; i < 19; i++)begin
-            out[i] = a[i+1];
-        end
-    end
-endmodule
-//Circuit 4: Rotate Left
-module rotl_ops (
     input [19:0] a, 
     output reg [19:0] out
 );
@@ -178,6 +162,24 @@ module rotl_ops (
     //Setting the last value of the input to the last value of the output
         out[0] = a[19];
 
+    //Iterating through the rest of the input
+        for (i = 19; i > 0; i--) begin
+            out[i] = a[i-1];
+        end
+    end
+endmodule
+
+//Circuit 4: Rotate Left
+module rotl_ops (
+    input [19:0] a, 
+    output reg [19:0] out
+);
+
+    integer i;
+
+    always @(a) begin 
+    //Setting the first value of the input to the last value of the output
+        out[19] = a[0];
     //Iterating through the rest of the input
         for (i = 0; i < 19; i++)begin
             out[i] = a[i+1];

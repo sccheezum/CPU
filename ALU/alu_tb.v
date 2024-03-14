@@ -192,6 +192,7 @@ module shftr_ops_tb;
     end
 
 endmodule
+
 //Circuit 2: Shift Left
 module shftl_ops_tb;
     reg clk;
@@ -221,4 +222,55 @@ module shftl_ops_tb;
         end
     end
 endmodule
+
 //Circuit 3: Rotate Right
+module rotr_ops_tb;
+    reg clk;
+    reg [19:0] a;
+    wire [19:0] out;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+
+    rotr_ops x0 (
+        .a(a),
+        .out(out)
+    );
+
+    initial begin
+        a <= 0;
+        $monitor ("a: %b - out: %b ", a, out);
+
+        for (i = 0; i < MAX_ITERS; i++)begin
+            #10 clk <= ~clk;
+                a <= $urandom(SEED);
+        end
+    end
+endmodule
+
+//Circuit 4: Rotate Left
+module rotl_ops_tb;
+    reg clk;
+    reg [19:0] a;
+    wire [19:0] out;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+
+    rotl_ops x0 (
+        .a(a),
+        .out(out)
+    );
+
+    initial begin
+        a <= 0;
+        $monitor ("a: %b - out: %b ", a, out);
+
+        for (i = 0; i < MAX_ITERS; i++)begin
+            #10 clk <= ~clk;
+                a <= $urandom(SEED);
+        end
+    end
+endmodule
