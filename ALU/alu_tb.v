@@ -8,6 +8,19 @@ Ursinus College
 `include "alu.v"
 `default_nettype none
 
+////////////////////////////////////////////////////////////
+//                     PROGRAM FLOWS                      //
+///////////////////////////////////////////////////////////
+
+//Circuit 1: Trap Mode
+//Circuit 2: No Operation 
+//Circuit 3: Jump Unconditional
+//Circuit 4: Jump Zero
+//Circuit 5: Jump Sign
+//Circuit 6: Jump Zero-Sign
+//Circuit 7: Load Status Register
+//Circuit 8: XOR Status Register
+
 
 ////////////////////////////////////////////////////////////
 //               LOGIC CLASS OF OPERATIONS               //
@@ -143,4 +156,39 @@ module xor_ops_tb;
                 b <= $urandom(SEED);
         end
     end
+endmodule
+
+////////////////////////////////////////////////////////////////
+//               BIT SHIFT CLASS OF OPERATIONS               //
+///////////////////////////////////////////////////////////////
+
+//Circuit 1: Shift Right (Courtesy of Isabelle taken from "isabelle_circuits.v")
+module shftr_ops_tb;
+    reg clk;
+    reg [19:0] a;
+    wire [19:0] out;
+    wire carry;
+    wire zero;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+
+    shftr_ops x0 (
+        .a(a),
+        .out(out),
+        .carry(carry),
+        .zero(zero)
+    );
+
+    initial begin
+        a <= 0;
+        $monitor ("a: %b - out: %b - carry: %b - zero: %b", a, out, carry, zero);
+
+        for (i = 0; i < MAX_ITERS; i++)begin
+            #10 clk <= ~clk;
+                a <= $urandom(SEED);
+        end
+    end
+
 endmodule
