@@ -242,24 +242,47 @@ endmodule
 module eq_ops (
     input [19:0] a,
     input [19:0] b,
-    output reg zero
+    output zero
 );
-//Might Change Code Later, but this is the gist
-    if (a = b) begin
-        zero = 1;
-    end 
-    else begin
-        zero = 0;
-    end
+    assign zero = (a == b);
 endmodule
 
 //Circuit 2: Greater Than
 module gt_ops (
     input [19:0] a,
     input [19:0] b,
-    output reg sign
+    output sign
 );
+    assign sign = a <= b;
 endmodule
+
 //Circuit 3: Less Than
+module lt_ops (
+    input [19:0] a,
+    input [19:0] b,
+    output sign
+);
+    assign sign = a < b;
+endmodule
+
 //Circuit 4: Greater Than or Equal To
+module get_ops (
+    input [19:0] a,
+    input [19:0] b,
+    output sign,
+    output zero
+);
+    assign zero = a >= b;
+    assign sign = ~zero;
+endmodule
+
 //Circuit 5: Less Than or Equal To
+module let_ops (
+    input [19:0] a,
+    input [19:0] b,
+    output sign,
+    output zero
+);
+    assign sign = a <= b;
+    assign zero = sign;
+endmodule
