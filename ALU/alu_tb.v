@@ -274,3 +274,185 @@ module rotl_ops_tb;
         end
     end
 endmodule
+
+//Circuit 5: Swap (Exchange)
+
+
+////////////////////////////////////////////////////////////////
+//               ARITHMETIC CLASS OF OPERATIONS              //
+///////////////////////////////////////////////////////////////
+
+//Circuit 1: Incrementer
+//Circuit 2: Decrementer
+//Circuit 3: Add without Carry
+//Circuit 4: Add with Carry
+//Circuit 5: Subtractor without Carry
+//Circuit 6: Subtractor with Carry
+
+
+////////////////////////////////////////////////////////////////
+//                COMPARISON CLASS OF OPERATIONS              //
+///////////////////////////////////////////////////////////////
+
+//Circuit 1: Equal To
+
+module eq_ops_tb;
+    reg clk;
+    reg [19:0] a;
+    reg [19:0] b;
+    wire zero;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+
+    eq_ops x0 (
+        .a(a),
+        .b(b),
+        .zero(zero)
+    );
+
+    initial begin
+        a <= 0;
+        b <= 0;
+
+        $monitor ("a: %b - b: %b - zero: %b", a, b, zero);
+
+        for (i = 0; i < MAX_ITERS; i++)begin
+            #10 clk <= ~clk;
+                a <= $urandom(SEED);
+                b <= $urandom(SEED);
+        end
+    end
+endmodule
+
+//Circuit 2: Greater Than
+
+module gt_ops_tb;
+    reg clk;
+    reg [19:0] a;
+    reg [19:0] b;
+    wire sign;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+
+    gt_ops x0 (
+        .a(a),
+        .b(b),
+        .sign(sign)
+    );
+
+    initial begin
+        a <= 0;
+        b <= 0;
+
+        $monitor ("a: %b - b: %b - sign: %b", a, b, sign);
+
+        for (i = 0; i < MAX_ITERS; i++)begin
+            #10 clk <= ~clk;
+                a <= $urandom(SEED);
+                b <= $urandom(SEED);
+        end
+    end
+endmodule
+
+//Circuit 3: Less Than
+
+module lt_ops_tb;
+    reg clk;
+    reg [19:0] a;
+    reg [19:0] b;
+    wire sign;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+
+    lt_ops x0 (
+        .a(a),
+        .b(b),
+        .sign(sign)
+    );
+
+    initial begin
+        a <= 0;
+        b <= 0;
+
+        $monitor ("a: %b - b: %b - sign: %b", a, b, sign);
+
+        for (i = 0; i < MAX_ITERS; i++)begin
+            #10 clk <= ~clk;
+                a <= $urandom(SEED);
+                b <= $urandom(SEED);
+        end
+    end
+endmodule
+
+//Circuit 4: Greater Than or Equal To
+module get_ops_tb;
+    reg clk;
+    reg [19:0] a;
+    reg [19:0] b;
+    wire sign;
+    wire zero;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+
+    get_ops x0 (
+        .a(a),
+        .b(b),
+        .sign(sign),
+        .zero(zero)
+    );
+
+    initial begin
+        a <= 0;
+        b <= 0;
+
+        $monitor ("a: %b - b: %b - sign: %b - zero: %b", a, b, sign,zero);
+
+        for (i = 0; i < MAX_ITERS; i++)begin
+            #10 clk <= ~clk;
+                a <= $urandom(SEED);
+                b <= $urandom(SEED);
+        end
+    end
+endmodule
+
+//Circuit 5: Less Than or Equal To
+
+module let_ops_tb;
+    reg clk;
+    reg [19:0] a;
+    reg [19:0] b;
+    wire sign;
+    wire zero;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+
+    let_ops x0 (
+        .a(a),
+        .b(b),
+        .sign(sign),
+        .zero(zero)
+    );
+
+    initial begin
+        a <= 0;
+        b <= 0;
+
+        $monitor ("a: %b - b: %b - sign: %b - zero: %b", a, b, sign,zero);
+
+        for (i = 0; i < MAX_ITERS; i++)begin
+            #10 clk <= ~clk;
+                a <= $urandom(SEED);
+                b <= $urandom(SEED);
+        end
+    end
+endmodule
