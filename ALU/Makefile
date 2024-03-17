@@ -1,10 +1,11 @@
 # CS 274
 # Ursinus College
 #
-# @author: Michael Cummins
-# @purpose: Compile the general registers with more ease.
+# @author: Eugene Thompson
+# @purpose: Demonstrate the implementation of simple operations
 
-TESTBENCH = gen_reg_tb
+
+TESTBENCH = alu_tb
 
 all:
 	iverilog -o $(TESTBENCH).vvp $(TESTBENCH).v

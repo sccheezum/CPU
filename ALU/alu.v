@@ -33,7 +33,7 @@ module not_ops (
 
    integer i;
 
-   always @(a or b) begin
+   always @(a) begin
       for (i = 0; i < 20; i++) begin
          c[i] = ~a[i];
       end
@@ -127,7 +127,29 @@ module shftr_ops (
     end
 
 endmodule
+
 //Circuit 2: Shift Left
+module shftl_ops (
+    input [19:0] a,
+    output reg [19:0] out,
+    output reg carry,
+    output reg zero
+);
+
+    integer i;
+
+    always @(a) begin
+        carry = a[0];
+        out[19] = 0;
+        for (i = 19; i > 0; i--) begin
+            out[i-1] = a[i];
+        end
+
+        zero = !(|out);
+    end
+
+endmodule
+
 //Circuit 3: Rotate Right
 module rotr_ops (
     input [19:0] a, 
@@ -136,17 +158,34 @@ module rotr_ops (
 
     integer i;
 
-    always @(r) begin 
+    always @(a) begin 
+    //Setting the last value of the input to the last value of the output
+        out[0] = a[19];
+
+    //Iterating through the rest of the input
+        for (i = 19; i > 0; i--) begin
+            out[i] = a[i-1];
+        end
+    end
+endmodule
+
+//Circuit 4: Rotate Left
+module rotl_ops (
+    input [19:0] a, 
+    output reg [19:0] out
+);
+
+    integer i;
+
+    always @(a) begin 
     //Setting the first value of the input to the last value of the output
         out[19] = a[0];
-
     //Iterating through the rest of the input
         for (i = 0; i < 19; i++)begin
             out[i] = a[i+1];
         end
     end
 endmodule
-//Circuit 4: Rotate Left
 //Circuit 5: Swap (Exchange)
 
 
@@ -203,24 +242,47 @@ endmodule
 module eq_ops (
     input [19:0] a,
     input [19:0] b,
-    output reg zero
+    output zero
 );
-//Might Change Code Later, but this is the gist
-    if (a = b) begin
-        zero = 1;
-    end 
-    else begin
-        zero = 0;
-    end
+    assign zero = (a == b);
 endmodule
 
 //Circuit 2: Greater Than
 module gt_ops (
     input [19:0] a,
     input [19:0] b,
-    output reg sign
+    output sign
 );
+    assign sign = a <= b;
 endmodule
+
 //Circuit 3: Less Than
+module lt_ops (
+    input [19:0] a,
+    input [19:0] b,
+    output sign
+);
+    assign sign = a < b;
+endmodule
+
 //Circuit 4: Greater Than or Equal To
+module get_ops (
+    input [19:0] a,
+    input [19:0] b,
+    output sign,
+    output zero
+);
+    assign zero = a >= b;
+    assign sign = ~zero;
+endmodule
+
 //Circuit 5: Less Than or Equal To
+module let_ops (
+    input [19:0] a,
+    input [19:0] b,
+    output sign,
+    output zero
+);
+    assign sign = a <= b;
+    assign zero = sign;
+endmodule
