@@ -12,6 +12,13 @@ Ursinus College
 
 //Circuit 1: Trap Mode
 //Circuit 2: No Operation 
+module no_ops (
+    input clk;
+);
+    always @(posedge clk | negedge clk) begin
+        //Start 4'3" by John Cage...
+    end
+endmodule
 //Circuit 3: Jump Unconditional
 //Circuit 4: Jump Zero
 //Circuit 5: Jump Sign
@@ -187,7 +194,12 @@ module rotl_ops (
     end
 endmodule
 //Circuit 5: Swap (Exchange)
+module swap_ops (
+    input [19:0] a,
+    input [19:0] b,
 
+);
+endmodule
 
 
 ////////////////////////////////////////////////////////////////
