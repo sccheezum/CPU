@@ -35,16 +35,31 @@ endmodule
 module not_ops (
    input [19:0] a,
    output reg [19:0] c,
+   input mode,
    output reg zero
 );
 
    integer i;
+   integer WORD_LENGTH;
 
-   always @(a) begin
-      for (i = 0; i < 20; i++) begin
-         c[i] = ~a[i];
-      end
-    
+   always @(a or mode) begin
+    //Full-Word Mode (Iterates Normally through the entire 20-bit register)
+      if (mode == 1) begin
+        WORD_LENGTH = 20;
+        for (i = 0; i < WORD_LENGTH; i++) begin
+            c[i] = ~a[i];
+        end
+    //Half-Word Mode (Iterates Through the 20-bit register for the first 10 bits, then leaves the rest blank)
+      end else begin
+        WORD_LENGTH = 10;
+        for (i = 0; i < WORD_LENGTH; i++) begin
+            c[i] = ~a[i];
+        end
+        for (i = WORD_LENGTH; i < 20; i++) begin
+            c[i] = 0;
+        end
+      end  
+      
       zero = !(|c);
    end  
 endmodule

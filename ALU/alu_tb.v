@@ -30,6 +30,7 @@ Ursinus College
 
 module not_ops_tb;
     reg clk;
+    reg mode; //If Mode is 1, then the operation is in full-word mode, otherwise half-word mode
     reg [19:0] a;
     wire [19:0] c;
     wire zero;
@@ -42,19 +43,22 @@ module not_ops_tb;
     not_ops x0 (
         .a(a),
         .c(c),
+        .mode(mode),
         .zero(zero)
     );
 
     initial begin
         a <= 0;
+        mode <= 0;
 
         $dumpfile("alu_tb");
         $dumpvars(1,x0);
-        $monitor ("a: %b - c: %b - zero: %b", a, c, zero);
+        $monitor ("a: %b - c: %b - zero: %b - full-word mode: %b", a, c, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++) begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 endmodule
