@@ -10,10 +10,11 @@ Ursinus College
 //                     PROGRAM FLOWS                      //
 ///////////////////////////////////////////////////////////
 
+
 //Circuit 1: Trap Mode
 //Circuit 2: No Operation 
 module no_ops (
-    input clk;
+    input clk,
 );
     always @(posedge clk | negedge clk) begin
         //Start 4'3" by John Cage...
@@ -30,6 +31,7 @@ endmodule
 ////////////////////////////////////////////////////////////
 //               LOGIC CLASS OF OPERATIONS               //
 ///////////////////////////////////////////////////////////
+
 
 //Circuit 1: 20-bit NOT
 module not_ops (
@@ -165,8 +167,6 @@ module xor_ops (
       zero = !(|c);
    end  
 endmodule
-
-
 
 
 ////////////////////////////////////////////////////////////////

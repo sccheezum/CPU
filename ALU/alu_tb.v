@@ -27,7 +27,6 @@ Ursinus College
 ///////////////////////////////////////////////////////////
 
 //Circuit 1: 20-bit NOT
-
 module not_ops_tb;
     reg clk;
     reg mode; //If Mode is 1, then the operation is in full-word mode, otherwise half-word mode
@@ -38,7 +37,6 @@ module not_ops_tb;
     integer i;
     integer MAX_ITERS = 10;
     integer SEED = 10559;
-
 //Instantiate Circuit
     not_ops x0 (
         .a(a),
@@ -64,7 +62,6 @@ module not_ops_tb;
 endmodule
 
 //Circuit 2: 20-bit AND
-
 module and_ops_tb;
     reg clk;
     reg mode; //If Mode is 1, then the operation is in full-word mode, otherwise half-word mode
