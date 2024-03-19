@@ -30,6 +30,7 @@ Ursinus College
 
 module not_ops_tb;
     reg clk;
+    reg mode; //If Mode is 1, then the operation is in full-word mode, otherwise half-word mode
     reg [19:0] a;
     wire [19:0] c;
     wire zero;
@@ -42,26 +43,31 @@ module not_ops_tb;
     not_ops x0 (
         .a(a),
         .c(c),
+        .mode(mode),
         .zero(zero)
     );
 
     initial begin
         a <= 0;
+        mode <= 0;
 
         $dumpfile("alu_tb");
         $dumpvars(1,x0);
-        $monitor ("a: %b - c: %b - zero: %b", a, c, zero);
+        $monitor ("a: %b - c: %b - zero: %b - full-word mode: %b", a, c, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++) begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 endmodule
 
 //Circuit 2: 20-bit AND
+
 module and_ops_tb;
     reg clk;
+    reg mode; //If Mode is 1, then the operation is in full-word mode, otherwise half-word mode
     reg [19:0] a;
     reg [19:0] b;
     wire [19:0] c;
@@ -75,19 +81,22 @@ module and_ops_tb;
         .a(a),
         .b(b),
         .c(c),
+        .mode(mode),
         .zero(zero)
     );
 
     initial begin
         a <= 0;
         b <= 0;
+        mode <= 0;
 
-        $monitor ("a: %b - b: %b - c: %b - zero: %b", a, b, c, zero);
+    $monitor ("a: %b - b: %b - c: %b - zero: %b - mode: %b", a, b, c, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
                 b <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 endmodule
@@ -95,6 +104,7 @@ endmodule
 //Circuit 3: 20-bit OR
 module or_ops_tb;
     reg clk;
+    reg mode; //If Mode is 1, then the operation is in full-word mode, otherwise half-word mode
     reg [19:0] a;
     reg [19:0] b;
     wire [19:0] c;
@@ -108,19 +118,22 @@ module or_ops_tb;
         .a(a),
         .b(b),
         .c(c),
+        .mode(mode),
         .zero(zero)
     );
 
     initial begin
         a <= 0;
         b <= 0;
+        mode <= 0;
 
-        $monitor ("a: %b - b: %b - c: %b - zero: %b", a, b, c, zero);
+        $monitor ("a: %b - b: %b - c: %b - zero: %b - mode: %b", a, b, c, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
                 b <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 endmodule
@@ -128,6 +141,7 @@ endmodule
 //Circuit 4: 20-bit XOR
 module xor_ops_tb;
     reg clk;
+    reg mode; //If Mode is 1, then the operation is in full-word mode, otherwise half-word mode
     reg [19:0] a;
     reg [19:0] b;
     wire [19:0] c;
@@ -141,19 +155,22 @@ module xor_ops_tb;
         .a(a),
         .b(b),
         .c(c),
+        .mode(mode),
         .zero(zero)
     );
 
     initial begin
         a <= 0;
         b <= 0;
+        mode <= 0;
 
-        $monitor ("a: %b - b: %b - c: %b - zero: %b", a, b, c, zero);
+        $monitor ("a: %b - b: %b - c: %b - zero: %b - mode: %b", a, b, c, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
                 b <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 endmodule
@@ -276,7 +293,37 @@ module rotl_ops_tb;
 endmodule
 
 //Circuit 5: Swap (Exchange)
+module swap_ops_tb;
+    reg clk;
+    reg [19:0] a;
+    reg [19:0] b;
+    wire [19:0] out_a;
+    wire [19:0] out_b;
 
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+
+    swap_ops x0 (
+        .a(a),
+        .b(b),
+        .out_a(out_a),
+        .out_b(out_b)
+    );
+
+    initial begin
+        a <= 0;
+        b <= 0;
+
+        $monitor ("a: %b - b: %b  - out_a: %b - out_b: %b", a, b, out_a, out_b);
+
+        for (i = 0; i < MAX_ITERS; i++)begin
+            #10 clk <= ~clk;
+                a <= $urandom(SEED);
+                b <= $urandom(SEED);
+        end
+    end
+endmodule
 
 ////////////////////////////////////////////////////////////////
 //               ARITHMETIC CLASS OF OPERATIONS              //

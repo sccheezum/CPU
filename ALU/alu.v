@@ -12,6 +12,13 @@ Ursinus College
 
 //Circuit 1: Trap Mode
 //Circuit 2: No Operation 
+module no_ops (
+    input clk;
+);
+    always @(posedge clk | negedge clk) begin
+        //Start 4'3" by John Cage...
+    end
+endmodule
 //Circuit 3: Jump Unconditional
 //Circuit 4: Jump Zero
 //Circuit 5: Jump Sign
@@ -26,24 +33,40 @@ Ursinus College
 
 //Circuit 1: 20-bit NOT
 module not_ops (
+   input mode,
    input [19:0] a,
    output reg [19:0] c,
    output reg zero
 );
 
    integer i;
+   integer WORD_LENGTH;
 
-   always @(a) begin
-      for (i = 0; i < 20; i++) begin
-         c[i] = ~a[i];
-      end
-    
+   always @(a or mode) begin
+    //Full-Word Mode (Iterates Normally through the entire 20-bit register)
+      if (mode == 1) begin
+        WORD_LENGTH = 20;
+        for (i = 0; i < WORD_LENGTH; i++) begin
+            c[i] = ~a[i];
+        end
+    //Half-Word Mode (Iterates Through the 20-bit register for the first 10 bits, then leaves the rest blank)
+      end else begin
+        WORD_LENGTH = 10;
+        for (i = 0; i < WORD_LENGTH; i++) begin
+            c[i] = ~a[i];
+        end
+        for (i = WORD_LENGTH; i < 20; i++) begin
+            c[i] = 0;
+        end
+      end  
+      
       zero = !(|c);
    end  
 endmodule
 
 //Circuit 2: 20-bit AND
 module and_ops (
+   input mode, 
    input [19:0] a,
    input [19:0] b,
    output reg [19:0] c,
@@ -51,18 +74,33 @@ module and_ops (
 );
 
    integer i;
+   integer WORD_LENGTH;
 
-   always @(a or b) begin
-      for (i = 0; i < 20; i++) begin
-         c[i] = a[i] & b[i];
-      end
-    
+   always @(a or b or mode) begin
+    //Full-Word Mode (Iterates Normally through the entire 20-bit register)
+      if (mode == 1) begin
+        WORD_LENGTH = 20;
+        for (i = 0; i < WORD_LENGTH; i++) begin
+            c[i] = a[i] & b[i];
+        end
+    //Half-Word Mode (Iterates Through the 20-bit register for the first 10 bits, then leaves the rest blank)
+      end else begin
+        WORD_LENGTH = 10;
+        for (i = 0; i < WORD_LENGTH; i++) begin
+            c[i] = a[i] & b[i];
+        end
+        for (i = WORD_LENGTH; i < 20; i++) begin
+            c[i] = 0;
+        end
+      end  
+
       zero = !(|c);
    end  
 endmodule
 
 //Circuit 3: 20-bit OR
 module or_ops (
+   input mode, 
    input [19:0] a,
    input [19:0] b,
    output reg [19:0] c,
@@ -70,11 +108,25 @@ module or_ops (
 );
 
    integer i;
+   integer WORD_LENGTH;
 
-   always @(a or b) begin
-      for (i = 0; i < 20; i++) begin
-         c[i] = a[i] | b[i];
-      end
+   always @(a or b or mode) begin
+    //Full-Word Mode (Iterates Normally through the entire 20-bit register)
+      if (mode == 1) begin
+        WORD_LENGTH = 20;
+        for (i = 0; i < WORD_LENGTH; i++) begin
+            c[i] = a[i] | b[i];
+        end
+    //Half-Word Mode (Iterates Through the 20-bit register for the first 10 bits, then leaves the rest blank)
+      end else begin
+        WORD_LENGTH = 10;
+        for (i = 0; i < WORD_LENGTH; i++) begin
+            c[i] = a[i] | b[i];
+        end
+        for (i = WORD_LENGTH; i < 20; i++) begin
+            c[i] = 0;
+        end
+      end  
     
       zero = !(|c);
    end  
@@ -82,6 +134,7 @@ endmodule
 
 //Circuit 4: 20-bit XOR
 module xor_ops (
+   input mode, 
    input [19:0] a,
    input [19:0] b,
    output reg [19:0] c,
@@ -89,12 +142,26 @@ module xor_ops (
 );
 
    integer i;
+   integer WORD_LENGTH;
 
    always @(a or b) begin
-      for (i = 0; i < 20; i++) begin
-         c[i] = a[i] ^ b[i];
-      end
-    
+    //Full-Word Mode (Iterates Normally through the entire 20-bit register)
+      if (mode == 1) begin
+        WORD_LENGTH = 20;
+        for (i = 0; i < WORD_LENGTH; i++) begin
+            c[i] = a[i] ^ b[i];
+        end
+    //Half-Word Mode (Iterates Through the 20-bit register for the first 10 bits, then leaves the rest blank)
+      end else begin
+        WORD_LENGTH = 10;
+        for (i = 0; i < WORD_LENGTH; i++) begin
+            c[i] = a[i] ^ b[i];
+        end
+        for (i = WORD_LENGTH; i < 20; i++) begin
+            c[i] = 0;
+        end
+      end  
+
       zero = !(|c);
    end  
 endmodule
@@ -106,7 +173,7 @@ endmodule
 //               BIT SHIFT CLASS OF OPERATIONS               //
 ///////////////////////////////////////////////////////////////
 
-//Circuit 1: Shift Right (Courtesy of Isabelle taken from "isabelle_circuits.v")
+//Circuit 1: Shift Right (Courtesy of Isabelle Son)
 module shftr_ops (
     input [19:0] a,
     output reg [19:0] out,
@@ -186,15 +253,31 @@ module rotl_ops (
         end
     end
 endmodule
-//Circuit 5: Swap (Exchange)
 
+//Circuit 5: Swap (Exchange)
+module swap_ops (
+    input [19:0] a,
+    input [19:0] b,
+    output reg [19:0] out_a,
+    output reg [19:0] out_b
+);
+    always @(a or b) begin
+        if (a == b) begin
+            out_a <= a;
+            out_b <= b;
+        end else begin
+            out_a <= b;
+            out_b <= a;
+        end
+    end
+endmodule
 
 
 ////////////////////////////////////////////////////////////////
 //               ARITHMETIC CLASS OF OPERATIONS              //
 ///////////////////////////////////////////////////////////////
 
-//Circuit 1: Incrementer (Courtesy of Isabelle taken from "isabelle_circuits.v")
+//Circuit 1: Incrementer (Courtesy of Isabelle Son)
 module inc_ops (
     input [19:0] a,
     output reg [19:0] out,
