@@ -193,12 +193,23 @@ module rotl_ops (
         end
     end
 endmodule
+
 //Circuit 5: Swap (Exchange)
 module swap_ops (
     input [19:0] a,
     input [19:0] b,
-
+    output reg [19:0] out_a,
+    output reg [19:0] out_b
 );
+    always @(a or b) begin
+        if (a == b) begin
+            out_a <= a;
+            out_b <= b;
+        end else begin
+            out_a <= b;
+            out_b <= a;
+        end
+    end
 endmodule
 
 

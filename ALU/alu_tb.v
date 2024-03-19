@@ -276,7 +276,37 @@ module rotl_ops_tb;
 endmodule
 
 //Circuit 5: Swap (Exchange)
+module swap_ops_tb;
+    reg clk;
+    reg [19:0] a;
+    reg [19:0] b;
+    wire [19:0] out_a;
+    wire [19:0] out_b;
 
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+
+    swap_ops x0 (
+        .a(a),
+        .b(b),
+        .out_a(out_a),
+        .out_b(out_b)
+    );
+
+    initial begin
+        a <= 0;
+        b <= 0;
+
+        $monitor ("a: %b - b: %b  - out_a: %b - out_b: %b", a, b, out_a, out_b);
+
+        for (i = 0; i < MAX_ITERS; i++)begin
+            #10 clk <= ~clk;
+                a <= $urandom(SEED);
+                b <= $urandom(SEED);
+        end
+    end
+endmodule
 
 ////////////////////////////////////////////////////////////////
 //               ARITHMETIC CLASS OF OPERATIONS              //
