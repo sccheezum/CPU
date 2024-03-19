@@ -34,6 +34,9 @@ module gen_reg_tb;
         clk = 0;
         addr_sel = 2'b00; // Full word access
         
+        $dumpfile("gen_reg_tb");
+        $dumpvars(1,x0);
+
         // Write data to register 0
         addr = 0;
         data_in = 20'b10101010101010101010;
