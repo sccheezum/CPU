@@ -64,8 +64,10 @@ module not_ops_tb;
 endmodule
 
 //Circuit 2: 20-bit AND
+
 module and_ops_tb;
     reg clk;
+    reg mode; //If Mode is 1, then the operation is in full-word mode, otherwise half-word mode
     reg [19:0] a;
     reg [19:0] b;
     wire [19:0] c;
@@ -79,19 +81,22 @@ module and_ops_tb;
         .a(a),
         .b(b),
         .c(c),
+        .mode(mode),
         .zero(zero)
     );
 
     initial begin
         a <= 0;
         b <= 0;
+        mode <= 0;
 
-        $monitor ("a: %b - b: %b - c: %b - zero: %b", a, b, c, zero);
+    $monitor ("a: %b - b: %b - c: %b - zero: %b - mode: %b", a, b, c, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
                 b <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 endmodule
@@ -99,6 +104,7 @@ endmodule
 //Circuit 3: 20-bit OR
 module or_ops_tb;
     reg clk;
+    reg mode; //If Mode is 1, then the operation is in full-word mode, otherwise half-word mode
     reg [19:0] a;
     reg [19:0] b;
     wire [19:0] c;
@@ -112,19 +118,22 @@ module or_ops_tb;
         .a(a),
         .b(b),
         .c(c),
+        .mode(mode),
         .zero(zero)
     );
 
     initial begin
         a <= 0;
         b <= 0;
+        mode <= 0;
 
-        $monitor ("a: %b - b: %b - c: %b - zero: %b", a, b, c, zero);
+        $monitor ("a: %b - b: %b - c: %b - zero: %b - mode: %b", a, b, c, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
                 b <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 endmodule
@@ -132,6 +141,7 @@ endmodule
 //Circuit 4: 20-bit XOR
 module xor_ops_tb;
     reg clk;
+    reg mode; //If Mode is 1, then the operation is in full-word mode, otherwise half-word mode
     reg [19:0] a;
     reg [19:0] b;
     wire [19:0] c;
@@ -145,19 +155,22 @@ module xor_ops_tb;
         .a(a),
         .b(b),
         .c(c),
+        .mode(mode),
         .zero(zero)
     );
 
     initial begin
         a <= 0;
         b <= 0;
+        mode <= 0;
 
-        $monitor ("a: %b - b: %b - c: %b - zero: %b", a, b, c, zero);
+        $monitor ("a: %b - b: %b - c: %b - zero: %b - mode: %b", a, b, c, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
                 b <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 endmodule
