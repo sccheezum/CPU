@@ -113,7 +113,7 @@ endmodule
 //               BIT SHIFT CLASS OF OPERATIONS               //
 ///////////////////////////////////////////////////////////////
 
-//Circuit 1: Shift Right (Courtesy of Isabelle taken from "isabelle_circuits.v")
+//Circuit 1: Shift Right (Courtesy of Isabelle Son)
 module shftr_ops (
     input [19:0] a,
     output reg [19:0] out,
@@ -217,7 +217,7 @@ endmodule
 //               ARITHMETIC CLASS OF OPERATIONS              //
 ///////////////////////////////////////////////////////////////
 
-//Circuit 1: Incrementer (Courtesy of Isabelle taken from "isabelle_circuits.v")
+//Circuit 1: Incrementer (Courtesy of Isabelle Son)
 module inc_ops (
     input [19:0] a,
     output reg [19:0] out,
