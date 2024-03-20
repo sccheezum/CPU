@@ -28,13 +28,14 @@ module ControlUnit (
     input wire mem_violation_flag, // Memory violation flag
     input wire mem_corruption_flag, // Memory corruption flag
     input wire trap_mode_flag,   // Trap mode flag
+    input wire [19:0] registers [5:0]; // General Registers
     output reg fetch_enable,     // Enable signal for instruction fetch stage
     output reg decode_enable,    // Enable signal for instruction decode stage
     output reg execute_enable,   // Enable signal for instruction execute stage
     output reg write_back_enable // Enable signal for write-back stage
 );
 
-// Define instruction opcodes
+// Define instruction opcodes (instruction[19:14])
 parameter TRAP_OP = 6'b000000; // TRAP: Enters trap mode
 parameter NOP_OP = 6'b000001; // NOP: No operation
 parameter JMP_OP = 6'b000010; // JMP: Jump Unconditional
@@ -63,12 +64,16 @@ parameter GT_OP = 6'b011000; // GT: Greater Than
 parameter LT_OP = 6'b011001; // LT: Less Than
 parameter GET_OP = 6'b011010; // GET: Greater or Equal Than
 parameter LET_OP = 6'b011011; // LET: Less or Equal Than
-parameter MRR_OP = 6'b011100; // MRR: Move Register to Register
-parameter LDC_OP = 6'b011101; // LDC: Load Constant
-parameter LDD_OP = 6'b011110; // LDD: Load Direct
-parameter LDI_OP = 6'b011111; // LDI: Load Indirect
-parameter STD_OP = 6'b100000; // STD: Store Direct
-parameter STI_OP = 6'b100001; // STI: Store Indirect
+
+// Register 1 is found with instruction[13:11]
+// Register 2 is found with instruction[10:8]
+// Destination register 1 is found with instruction[7:5]
+// Destination register 2 is found with instruction[4:2] 
+// ALU mode (full/half word) found with instruction[1]
+
+// Instruction format: | OPCODE(6b) | SRC_REG1(3b) | SRC_REG2(3b) | DEST_REG1(3b) | DEST_REG2(3b) | ALU_MODE(1b) | EXTRA(1b) |
+// e.g 00100110010100000010 = 001001|100|101|000|000|1|0 = AND between registers 4 and 5 stored in register 0 
+//                                                         (no need for second store) in full word mode
 
 // Define states
 parameter FETCH_STATE = 3'b000; // Fetch state
@@ -102,7 +107,7 @@ always @(posedge clk or posedge reset) begin
         // State transition logic
         case (state)
             FETCH_STATE: begin
-                // Fetch instruction from memory
+                // Fetch instruction from memory (Instructions are recieved upon intialization)
                 // Update state and enable next stage
                 state <= DECODE_STATE;
                 decode_enable <= 1'b1;
@@ -111,13 +116,13 @@ always @(posedge clk or posedge reset) begin
             end
             DECODE_STATE: begin
                 // Decode instruction and determine control signals for other components
-                case (instruction)
+                case (instruction[19:14])
                     //ALU Opcode
                     TRAP_OP: begin
                         // assign all necessary data
                     end
                     NOP_OP: begin
-                        // assign all necessary data
+                        // No operation, so no specific action needed
                     end
                     JMP_OP: begin
                         // assign all necessary data
@@ -138,34 +143,88 @@ always @(posedge clk or posedge reset) begin
                         // assign all necessary data
                     end
                     NOT_OP: begin
-                        // assign all necessary data
+                        alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        alu_result1 <= registers[instruction[7:5]]; // Destination register 1 address
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     AND_OP: begin
-                        // assign all necessary data
+                        alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        alu_src2 <= registers[instruction[10:8]]; // Source register 2 address
+                        alu_result1 <= registers[instruction[7:5]]; // Destination register 1 address
+                        zero_flag = 1'b0;
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     OR_OP: begin
-                        // assign all necessary data
+                        alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        alu_src2 <= registers[instruction[10:8]]; // Source register 2 address
+                        alu_result1 <= registers[instruction[7:5]]; // Destination register 1 address
+                        zero_flag = 1'b0;
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     XOR_OP: begin
-                        // assign all necessary data
+                        alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        alu_src2 <= registers[instruction[10:8]]; // Source register 2 address
+                        alu_result1 <= registers[instruction[7:5]]; // Destination register 1 address
+                        zero_flag = 1'b0;
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     SHFTR_OP: begin
-                        // assign all necessary data
+                        alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        alu_result1 <= registers[instruction[7:5]]; // Destination register 1 address
+                        carry_flag_fw = 1'b0;
+                        zero_flag = 1'b0;
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     SHFTL_OP: begin
-                        // assign all necessary data
+                        alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        alu_result1 <= registers[instruction[7:5]]; // Destination register 1 address
+                        carry_flag_fw = 1'b0;
+                        zero_flag = 1'b0;
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     ROTR_OP: begin
-                       // assign all necessary data
+                        alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        alu_result1 <= registers[instruction[7:5]]; // Destination register 1 address
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     ROTL_OP: begin
-                        // assign all necessary data
+                        alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        alu_result1 <= registers[instruction[7:5]]; // Destination register 1 address
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     SWAP_OP: begin
-                        // assign all necessary data
+                        alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        alu_src2 <= registers[instruction[10:8]]; // Source register 2 address
+                        alu_result1 <= registers[instruction[7:5]]; // Destination register 1 address
+                        alu_result2 <= registers[instruction[4:2]]; // Destination register 2 address
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     INC_OP: begin
-                        // assign all necessary data
+                        alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        alu_result1 <= registers[instruction[7:5]]; // Destination register 1 address
+                        carry_flag_fw = 1'b0;
+                        zero_flag = 1'b0;
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     DEC_OP: begin
                         // assign all necessary data
@@ -183,39 +242,46 @@ always @(posedge clk or posedge reset) begin
                         // assign all necessary data
                     end
                     EQ_OP: begin
-                        // assign all necessary data
+                        alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        alu_src2 <= registers[instruction[10:8]]; // Source register 2 address
+                        zero_flag = 1'b0;
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     GT_OP: begin
-                        // assign all necessary data
+                        alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        alu_src2 <= registers[instruction[10:8]]; // Source register 2 address
+                        sign_flag = 1'b0;
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     LT_OP: begin
-                        // assign all necessary data
+                        alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        alu_src2 <= registers[instruction[10:8]]; // Source register 2 address
+                        sign_flag = 1'b0;
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     GET_OP: begin
-                        // assign all necessary data
+                        alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        alu_src2 <= registers[instruction[10:8]]; // Source register 2 address
+                        sign_flag = 1'b0;
+                        zero_flag = 1'b0;
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     LET_OP: begin
-                        // assign all necessary data
-                    end
+                        alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        alu_src2 <= registers[instruction[10:8]]; // Source register 2 address
+                        sign_flag = 1'b0;
+                        zero_flag = 1'b0;
 
-                    //Register Management Opcode
-                    MRR_OP: begin
-                        // assign all necessary data
-                    end
-                    LDC_OP: begin
-                        // assign all necessary data
-                    end
-                    LDD_OP: begin
-                        // assign all necessary data
-                    end
-                    LDI_OP: begin
-                        // assign all necessary data
-                    end
-                    STD_OP: begin
-                        // assign all necessary data
-                    end
-                    STI_OP: begin
-                        // assign all necessary data
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     default: // Handle default case
                 endcase
@@ -227,8 +293,7 @@ always @(posedge clk or posedge reset) begin
             end
             EXECUTE_STATE: begin
                 // Execute ALU operation or control flow operation
-                case (instruction)
-
+                case (instruction[19:14])
                     //ALU Opcode
                     TRAP_OP: begin
                         // Handle TRAP instruction
@@ -358,54 +423,34 @@ always @(posedge clk or posedge reset) begin
                         );
                     end
                     GT_OP: begin
-                        // Handle GT instruction
+                        gt_ops(
+                            .a(alu_src1),
+                            .b(alu_src2),
+                            .sign(sign_flag)
+                        );
                     end
                     LT_OP: begin
-                        // Handle LT instruction
+                        lt_ops(
+                            .a(alu_src1),
+                            .b(alu_src2),
+                            .sign(sign_flag)
+                        );
                     end
                     GET_OP: begin
-                        // Handle GET instruction
+                        get_ops(
+                            .a(alu_src1),
+                            .b(alu_src2),
+                            .sign(alu_result1),
+                            .zero(zero_flag)
+                        );
                     end
                     LET_OP: begin
-                        // Handle LET instruction
-                    end
-
-                    //Register Management Opcode
-                    // *TENTATIVE CHANGES -- Still need to check to make sure this is the correct method of implementation
-                    MRR_OP: begin
-                        gen_reg_write_addr <= instruction[11:10]; // Destination register address
-                        alu_src1 <= registers[instruction[5:4]]; // Source register address
-                    end
-                    LDC_OP: begin
-                        gen_reg_write_addr <= instruction[11:10]; // Destination register address
-                        gen_reg_write_data <= instruction[9:0]; // Constant value to be loaded
-                    end
-                    LDD_OP: begin
-                        // Load data from direct memory address into register
-                        gen_reg_write_addr <= instruction[11:10]; // Destination register address
-                        // Load data from memory address specified in instruction
-                        alu_src1 <= instruction[9:0]; // Memory address
-                    end
-                    LDI_OP: begin
-                        // Load data from memory address stored in a register into another register
-                        gen_reg_write_addr <= instruction[11:10]; // Destination register address
-                        // Load memory address from register
-                        alu_src1 <= registers[instruction[9:8]]; // Load memory address from register
-                        alu_src2 <= registers[instruction[7:6]]; // Source register address
-                    end
-                    STD_OP: begin
-                        // Store data from register to direct memory address
-                        // Read data from the register
-                        alu_src1 <= registers[instruction[11:10]]; // Source register address
-                        // Store data to memory address specified in instruction
-                        alu_src2 <= instruction[9:0]; // Memory address
-                    end
-                    STI_OP: begin
-                        // Store data from register to memory address stored in another register
-                        // Read data from the source register
-                        alu_src1 <= registers[instruction[11:10]]; // Source register address
-                        // Load memory address from register
-                        alu_src2 <= registers[instruction[9:8]]; // Memory address
+                        let_ops(
+                            .a(alu_src1),
+                            .b(alu_src2),
+                            .sign(alu_result1),
+                            .zero(zero_flag)
+                        );
                     end
                     default: // Handle default case
                 endcase
