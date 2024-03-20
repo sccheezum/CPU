@@ -112,6 +112,122 @@ always @(posedge clk or posedge reset) begin
             DECODE_STATE: begin
                 // Decode instruction and determine control signals for other components
                 case (instruction)
+                    //ALU Opcode
+                    TRAP_OP: begin
+                        // assign all necessary data
+                    end
+                    NOP_OP: begin
+                        // assign all necessary data
+                    end
+                    JMP_OP: begin
+                        // assign all necessary data
+                    end
+                    JMPZ_OP: begin
+                        // assign all necessary data
+                    end
+                    JMPS_OP: begin
+                        // assign all necessary data
+                    end
+                    JMPZS_OP: begin
+                        // assign all necessary data
+                    end
+                    LSTAT_OP: begin
+                        // assign all necessary data
+                    end
+                    XSTAT_OP: begin
+                        // assign all necessary data
+                    end
+                    NOT_OP: begin
+                        // assign all necessary data
+                    end
+                    AND_OP: begin
+                        // assign all necessary data
+                    end
+                    OR_OP: begin
+                        // assign all necessary data
+                    end
+                    XOR_OP: begin
+                        // assign all necessary data
+                    end
+                    SHFTR_OP: begin
+                        // assign all necessary data
+                    end
+                    SHFTL_OP: begin
+                        // assign all necessary data
+                    end
+                    ROTR_OP: begin
+                       // assign all necessary data
+                    end
+                    ROTL_OP: begin
+                        // assign all necessary data
+                    end
+                    SWAP_OP: begin
+                        // assign all necessary data
+                    end
+                    INC_OP: begin
+                        // assign all necessary data
+                    end
+                    DEC_OP: begin
+                        // assign all necessary data
+                    end
+                    ADD_OP: begin
+                        // assign all necessary data
+                    end
+                    ADDC_OP: begin
+                        // assign all necessary data
+                    end
+                    SUB_OP: begin
+                        // assign all necessary data
+                    end
+                    SUBC_OP: begin
+                        // assign all necessary data
+                    end
+                    EQ_OP: begin
+                        // assign all necessary data
+                    end
+                    GT_OP: begin
+                        // assign all necessary data
+                    end
+                    LT_OP: begin
+                        // assign all necessary data
+                    end
+                    GET_OP: begin
+                        // assign all necessary data
+                    end
+                    LET_OP: begin
+                        // assign all necessary data
+                    end
+
+                    //Register Management Opcode
+                    MRR_OP: begin
+                        // assign all necessary data
+                    end
+                    LDC_OP: begin
+                        // assign all necessary data
+                    end
+                    LDD_OP: begin
+                        // assign all necessary data
+                    end
+                    LDI_OP: begin
+                        // assign all necessary data
+                    end
+                    STD_OP: begin
+                        // assign all necessary data
+                    end
+                    STI_OP: begin
+                        // assign all necessary data
+                    end
+                    default: // Handle default case
+                endcase
+                // Update state and enable next stage
+                state <= EXECUTE_STATE;
+                execute_enable <= 1'b1;
+                // Disable previous stage
+                decode_enable <= 1'b0;
+            end
+            EXECUTE_STATE: begin
+                // Execute ALU operation or control flow operation
+                case (instruction)
 
                     //ALU Opcode
                     TRAP_OP: begin
@@ -255,34 +371,44 @@ always @(posedge clk or posedge reset) begin
                     end
 
                     //Register Management Opcode
+                    // *TENTATIVE CHANGES -- Still need to check to make sure this is the correct method of implementation
                     MRR_OP: begin
-                        // Handle MRR instruction
+                        gen_reg_write_addr <= instruction[11:10]; // Destination register address
+                        alu_src1 <= registers[instruction[5:4]]; // Source register address
                     end
                     LDC_OP: begin
-                        // Handle LDC instruction
+                        gen_reg_write_addr <= instruction[11:10]; // Destination register address
+                        gen_reg_write_data <= instruction[9:0]; // Constant value to be loaded
                     end
                     LDD_OP: begin
-                        // Handle LDD instruction
+                        // Load data from direct memory address into register
+                        gen_reg_write_addr <= instruction[11:10]; // Destination register address
+                        // Load data from memory address specified in instruction
+                        alu_src1 <= instruction[9:0]; // Memory address
                     end
                     LDI_OP: begin
-                        // Handle LDI instruction
+                        // Load data from memory address stored in a register into another register
+                        gen_reg_write_addr <= instruction[11:10]; // Destination register address
+                        // Load memory address from register
+                        alu_src1 <= registers[instruction[9:8]]; // Load memory address from register
+                        alu_src2 <= registers[instruction[7:6]]; // Source register address
                     end
                     STD_OP: begin
-                        // Handle STD instruction
+                        // Store data from register to direct memory address
+                        // Read data from the register
+                        alu_src1 <= registers[instruction[11:10]]; // Source register address
+                        // Store data to memory address specified in instruction
+                        alu_src2 <= instruction[9:0]; // Memory address
                     end
                     STI_OP: begin
-                        // Handle STI instruction
+                        // Store data from register to memory address stored in another register
+                        // Read data from the source register
+                        alu_src1 <= registers[instruction[11:10]]; // Source register address
+                        // Load memory address from register
+                        alu_src2 <= registers[instruction[9:8]]; // Memory address
                     end
                     default: // Handle default case
                 endcase
-                // Update state and enable next stage
-                state <= EXECUTE_STATE;
-                execute_enable <= 1'b1;
-                // Disable previous stage
-                decode_enable <= 1'b0;
-            end
-            EXECUTE_STATE: begin
-                // Execute ALU operation or control flow operation
                 // Update state and enable next stage
                 state <= WRITE_BACK_STATE;
                 write_back_enable <= 1'b1;
