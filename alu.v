@@ -313,18 +313,20 @@ endmodule
 
 //Circuit 2: Decrementer
 module dec_ops (
+    input mode,
     input [19:0] a,
     output reg [19:0] out,
-    //underflow
+    output reg carry,
     output reg zero
 );
 
     integer i;
-    integer carry;
+    integer MAX_BITS;
 
     always @(a) begin
+        MAX_BITS = (mode == 1) ? 19 : 9;
         carry = 0;
-        for (i = 19; i >= 0; i--) begin
+        for (i = MAX_BITS; i >= 0; i--) begin
             out[i] = a[i] + carry + 1;
             if (a[i] == 1 || carry == 1) begin
                 carry = 1;
@@ -333,6 +335,11 @@ module dec_ops (
             end
         end
 
+        if (mode == 0) begin
+            for (i = 9; i < 20; i++) begin
+                out[i] = 0;
+            end
+        end
         zero = !(|out);
     end
 

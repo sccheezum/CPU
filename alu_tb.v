@@ -363,10 +363,10 @@ module inc_ops_tb;
 
 endmodule
 
-
 //Circuit 2: Decrementer
 module dec_ops_tb;
     // Set inputs and outputs
+    reg mode;
     reg [19:0] a;
     wire [19:0] out;
     wire carry;
@@ -378,6 +378,7 @@ module dec_ops_tb;
 
     // Instantiate the incrementer
     dec_ops x0 (
+        .mode(mode),
         .a (a),
         .out (out),
         .carry (carry),
@@ -386,16 +387,17 @@ module dec_ops_tb;
 
     initial begin
         a <= 0;
+        mode <= 0;
 
-        $monitor ("a: 0b%0b - out: 0b%0b - carry: 0b%0b - zero: 0b%0b", a, out, carry, zero);
+        $monitor ("a: %0b - out: %b - carry: %0b - zero: %0b - mode: %0b", a, out, carry, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++) begin
             #10 a <= $urandom(SEED);
+            mode <= $urandom(SEED);
         end
     end
 
 endmodule
-
 
 //Circuit 3: Add without Carry
 module add_wc_ops_tb;
