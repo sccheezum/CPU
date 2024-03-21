@@ -281,6 +281,7 @@ endmodule
 module inc_ops (
     input [19:0] a,
     output reg [19:0] out,
+    //overflow
     output reg carry,
     output reg zero
 );
@@ -307,11 +308,12 @@ endmodule
 module dec_ops (
     input [19:0] a,
     output reg [19:0] out,
-    output reg carry,
+    //underflow
     output reg zero
 );
 
     integer i;
+    integer carry;
 
     always @(a) begin
         carry = 0;
