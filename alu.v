@@ -68,15 +68,19 @@ endmodule
 
 //Circuit 6: Jump Zero-Sign
 module jmpzs_ops (
-    input clk,
     input [19:0] jmp_addr,
     input zero,
+    input sign,
     output reg [19:0] prog_point
 );
 
-always @(posedge clk) begin
-    if (zero && sign) begin
-        prog_point <= jmp_addr;
+always @(zero or sign) begin
+    if (zero == 1 && sign == 1) begin
+        prog_point = jmp_addr;
+
+//Not Sure What to do here to reset the prog_point back to nothing... ideas?
+    end else begin
+        prog_point = 0;
     end
 end
 

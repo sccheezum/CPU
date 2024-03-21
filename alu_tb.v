@@ -20,6 +20,37 @@ Ursinus College
 //Circuit 4: Jump Zero
 //Circuit 5: Jump Sign
 //Circuit 6: Jump Zero-Sign
+module jmpzs_ops_tb;
+    reg zero;
+    reg sign;
+    reg [19:0] jmp_addr;
+    wire [19:0] prog_point;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+//Instantiate Circuit
+    jmpzs_ops x0 (
+        .zero(zero),
+        .sign(sign),
+        .jmp_addr(jmp_addr),
+        .prog_point(prog_point)
+    );
+
+    initial begin
+        zero <= 0;
+        sign <= 0;
+        jmp_addr <= 0;
+
+        $monitor ("zero: %b - sign: %b - jmp_addr: %b - prog_point: %b", zero, sign, jmp_addr, prog_point);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 zero <= $urandom(SEED);
+                sign <= $urandom(SEED);
+                jmp_addr <= $urandom(SEED);
+        end
+    end
+endmodule
 //Circuit 7: Load Status Register
 //Circuit 8: XOR Status Register
 
