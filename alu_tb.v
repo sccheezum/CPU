@@ -293,6 +293,7 @@ endmodule
 
 //Circuit 5: Swap (Exchange)
 module swap_ops_tb;
+    reg mode;
     reg clk;
     reg [19:0] a;
     reg [19:0] b;
@@ -304,6 +305,7 @@ module swap_ops_tb;
     integer SEED = 10559;
 
     swap_ops x0 (
+        .mode(mode),
         .a(a),
         .b(b),
         .out_a(out_a),
@@ -313,13 +315,15 @@ module swap_ops_tb;
     initial begin
         a <= 0;
         b <= 0;
+        mode <= 0;
 
-        $monitor ("a: %b - b: %b  - out_a: %b - out_b: %b", a, b, out_a, out_b);
+        $monitor ("a: %b - b: %b  - out_a: %b - out_b: %b - mode: %b", a, b, out_a, out_b, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
                 b <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 endmodule

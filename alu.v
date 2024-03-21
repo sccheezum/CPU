@@ -256,18 +256,31 @@ endmodule
 
 //Circuit 5: Swap (Exchange)
 module swap_ops (
+    input mode,
     input [19:0] a,
     input [19:0] b,
     output reg [19:0] out_a,
     output reg [19:0] out_b
 );
     always @(a or b) begin
+    //If the two registers are equal than perform no operation
+    //by simply passing it through it's respective output register
         if (a == b) begin
             out_a <= a;
             out_b <= b;
-        end else begin
+    //If the Two Registers are unequal and its in Full-Word Mode
+    //Swap the Registers
+        end else if (a != b && mode == 1) begin
             out_a <= b;
             out_b <= a;
+    //If the Two Registers are unequal and its in Half-Word Mode
+    //Swap the Lower Registers and set the Higher Registers to 0
+        end else if (a != b && mode == 0) begin
+            out_a[9:0] <= b[9:0];
+            out_a[19:10] = 0;
+
+            out_b[9:0] <= a[9:0];
+            out_b[19:10] = 0;
         end
     end
 endmodule
