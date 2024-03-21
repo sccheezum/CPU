@@ -328,6 +328,38 @@ module dec_ops (
 
 endmodule
 //Circuit 3: Add without Carry
+module add_wc_ops (
+input mode, 
+input [19:0] a,
+input [19:0] b,
+output reg [19:0] c,
+output reg zero
+);
+
+   integer i;
+   integer WORD_LENGTH;
+
+   always @(a or b) begin
+    //Full-Word Mode (Iterates Normally through the entire 20-bit register)
+      if (mode == 1) begin
+        WORD_LENGTH = 20;
+        for (i = 0; i < WORD_LENGTH; i++) begin
+            c[i] = a[i] ^ b[i];
+        end
+    //Half-Word Mode (Iterates Through the 20-bit register for the first 10 bits, then leaves the rest blank)
+      end else begin
+        WORD_LENGTH = 10;
+        for (i = 0; i < WORD_LENGTH; i++) begin
+            c[i] = a[i] ^ b[i];
+        end
+        for (i = WORD_LENGTH; i < 20; i++) begin
+            c[i] = 0;
+        end
+      end  
+
+      zero = !(|c);
+   end  
+endmodule
 //Circuit 4: Add with Carry
 //Circuit 5: Subtractor without Carry
 //Circuit 6: Subtractor with Carry
