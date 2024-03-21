@@ -329,10 +329,13 @@ endmodule
 ///////////////////////////////////////////////////////////////
 
 //Circuit 1: Incrementer
+
+
 //Circuit 2: Decrementer
+
+
 //Circuit 3: Add without Carry
 module add_wc_ops_tb;
-    reg clk;
     reg mode; //If Mode is 1, then the operation is in full-word mode, otherwise half-word mode
     reg [19:0] a;
     reg [19:0] b;
@@ -359,15 +362,51 @@ module add_wc_ops_tb;
         $monitor ("a: %b - b: %b - c: %b - zero: %b - mode: %b", a, b, c, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
-            #10 clk <= ~clk;
-                a <= $urandom(SEED);
+            #10 a <= $urandom(SEED);
                 b <= $urandom(SEED);
                 mode <= $urandom(SEED);
         end
     end
 endmodule
+
 //Circuit 4: Add with Carry
+
+
 //Circuit 5: Subtractor without Carry
+module sub_wc_ops_tb;
+    reg mode; //If Mode is 1, then the operation is in full-word mode, otherwise half-word mode
+    reg [19:0] a;
+    reg [19:0] b;
+    wire [19:0] c;
+    wire zero;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+
+    sub_wc_ops x0 (
+        .a(a),
+        .b(b),
+        .c(c),
+        .mode(mode),
+        .zero(zero)
+    );
+
+    initial begin
+        a <= 0;
+        b <= 0;
+        mode <= 0;
+
+        $monitor ("a: %b - b: %b - c: %b - zero: %b - mode: %b", a, b, c, zero, mode);
+
+        for (i = 0; i < MAX_ITERS; i++)begin
+            #10 a <= $urandom(SEED);
+                b <= $urandom(SEED);
+                mode <= $urandom(SEED);
+        end
+    end
+endmodule
+
 //Circuit 6: Subtractor with Carry
 module sub_c_ops_tb;
     reg mode; //If Mode is 1, then the operation is in full-word mode, otherwise half-word mode
