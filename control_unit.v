@@ -12,7 +12,7 @@ Ursinus College
 `include "pointer_segment_registers.v"
 `include "s_reg.v"
 
-module ControlUnit (
+module control_unit (
     input wire clk,              // Clock input
     input wire reset,            // Reset input
     input wire [19:0] instruction, // Current instruction
