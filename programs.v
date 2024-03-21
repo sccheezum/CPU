@@ -84,7 +84,7 @@ module program;
         //Greater than with inputs in registers 3 and 4 stored in register 2 in full word mode
         registers[3] = 20'b00000000001011000010;
         registers[4] = 20'b00000000000011001010;
-        instruciton = 20'b01100001110001000010;
+        instruction = 20'b01100001110001000010;
         #20;
 
         //Jump zero to address specified in register 1
@@ -97,7 +97,3 @@ module program;
     always #5 clk = ~clk;
 
 endmodule
-
-
-
-    
