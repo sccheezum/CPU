@@ -303,6 +303,30 @@ module inc_ops (
 
 endmodule
 //Circuit 2: Decrementer
+module dec_ops (
+    input [19:0] a,
+    output reg [19:0] out,
+    output reg carry,
+    output reg zero
+);
+
+    integer i;
+
+    always @(a) begin
+        carry = 0;
+        for (i = 19; i >= 0; i--) begin
+            out[i] = a[i] + carry + 1;
+            if (a[i] == 1 || carry == 1) begin
+                carry = 1;
+            end else begin
+                carry = 0;
+            end
+        end
+
+        zero = !(|out);
+    end
+
+endmodule
 //Circuit 3: Add without Carry
 //Circuit 4: Add with Carry
 //Circuit 5: Subtractor without Carry
