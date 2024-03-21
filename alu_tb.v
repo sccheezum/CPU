@@ -344,6 +344,7 @@ endmodule
 
 module eq_ops_tb;
     reg clk;
+    reg mode; //If Mode is 1, then the operation is in full-word mode, otherwise half-word mode
     reg [19:0] a;
     reg [19:0] b;
     wire zero;
@@ -353,6 +354,7 @@ module eq_ops_tb;
     integer SEED = 10559;
 
     eq_ops x0 (
+        .mode(mode),
         .a(a),
         .b(b),
         .zero(zero)
@@ -361,13 +363,15 @@ module eq_ops_tb;
     initial begin
         a <= 0;
         b <= 0;
+        mode <= 0;
 
-        $monitor ("a: %b - b: %b - zero: %b", a, b, zero);
+        $monitor ("a: %b - b: %b - zero: %b - mode - %b", a, b, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
                 b <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 endmodule
@@ -376,6 +380,7 @@ endmodule
 
 module gt_ops_tb;
     reg clk;
+    reg mode; //If Mode is 1, then the operation is in full-word mode, otherwise half-word mode
     reg [19:0] a;
     reg [19:0] b;
     wire sign;
@@ -385,6 +390,7 @@ module gt_ops_tb;
     integer SEED = 10559;
 
     gt_ops x0 (
+        .mode(mode),
         .a(a),
         .b(b),
         .sign(sign)
@@ -393,13 +399,15 @@ module gt_ops_tb;
     initial begin
         a <= 0;
         b <= 0;
+        mode <= 0;
 
-        $monitor ("a: %b - b: %b - sign: %b", a, b, sign);
+        $monitor ("a: %b - b: %b - sign: %b - mode: %b", a, b, sign, mode);
 
-        for (i = 0; i < MAX_ITERS; i++)begin
+        for (i = 0; i < MAX_ITERS; i++) begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
                 b <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 endmodule
@@ -408,6 +416,7 @@ endmodule
 
 module lt_ops_tb;
     reg clk;
+    reg mode; //If Mode is 1, then the operation is in full-word mode, otherwise half-word mode
     reg [19:0] a;
     reg [19:0] b;
     wire sign;
@@ -417,6 +426,7 @@ module lt_ops_tb;
     integer SEED = 10559;
 
     lt_ops x0 (
+        .mode(mode),
         .a(a),
         .b(b),
         .sign(sign)
@@ -425,13 +435,15 @@ module lt_ops_tb;
     initial begin
         a <= 0;
         b <= 0;
+        mode <= 0;
 
-        $monitor ("a: %b - b: %b - sign: %b", a, b, sign);
+        $monitor ("a: %b - b: %b - sign: %b - mode: %b", a, b, sign, mode);
 
-        for (i = 0; i < MAX_ITERS; i++)begin
+        for (i = 0; i < MAX_ITERS; i++) begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
                 b <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 endmodule
@@ -439,6 +451,7 @@ endmodule
 //Circuit 4: Greater Than or Equal To
 module get_ops_tb;
     reg clk;
+    reg mode;
     reg [19:0] a;
     reg [19:0] b;
     wire sign;
@@ -449,6 +462,7 @@ module get_ops_tb;
     integer SEED = 10559;
 
     get_ops x0 (
+        .mode(mode),
         .a(a),
         .b(b),
         .sign(sign),
@@ -458,13 +472,15 @@ module get_ops_tb;
     initial begin
         a <= 0;
         b <= 0;
+        mode <= 0;
 
-        $monitor ("a: %b - b: %b - sign: %b - zero: %b", a, b, sign,zero);
+        $monitor ("a: %b - b: %b - sign: %b - zero: %b - mode: %b", a, b, sign, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
                 b <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 endmodule
@@ -473,6 +489,7 @@ endmodule
 
 module let_ops_tb;
     reg clk;
+    reg mode;
     reg [19:0] a;
     reg [19:0] b;
     wire sign;
@@ -483,6 +500,7 @@ module let_ops_tb;
     integer SEED = 10559;
 
     let_ops x0 (
+        .mode(mode),
         .a(a),
         .b(b),
         .sign(sign),
@@ -492,13 +510,15 @@ module let_ops_tb;
     initial begin
         a <= 0;
         b <= 0;
+        mode <= 0;
 
-        $monitor ("a: %b - b: %b - sign: %b - zero: %b", a, b, sign,zero);
+        $monitor ("a: %b - b: %b - sign: %b - zero: %b - mode: %b", a, b, sign, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
                 b <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 endmodule

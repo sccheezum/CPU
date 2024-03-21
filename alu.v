@@ -347,29 +347,32 @@ endmodule
 
 //Circuit 1: Equal To
 module eq_ops (
+    input mode,
     input [19:0] a,
     input [19:0] b,
     output zero
 );
-    assign zero = (a == b);
+    assign zero = (mode == 0) ? (a[9:0] == b[9:0]) : (a == b);
 endmodule
 
 //Circuit 2: Greater Than
 module gt_ops (
+    input mode,
     input [19:0] a,
     input [19:0] b,
     output sign
 );
-    assign sign = a <= b;
+    assign sign = (mode == 0) ? (a[9:0] <= b[9:0]) : (a <= b);
 endmodule
 
 //Circuit 3: Less Than
 module lt_ops (
+    input mode,
     input [19:0] a,
     input [19:0] b,
     output sign
 );
-    assign sign = a < b;
+    assign sign = (mode == 0) ? (a[9:0] < b[9:0]) : (a < b);
 endmodule
 
 //Circuit 4: Greater Than or Equal To
@@ -379,7 +382,7 @@ module get_ops (
     output sign,
     output zero
 );
-    assign zero = a >= b;
+    assign zero = (mode == 0) ? (a[9:0] >= b[9:0]) : (a >= b);
     assign sign = ~zero;
 endmodule
 
@@ -390,6 +393,6 @@ module let_ops (
     output sign,
     output zero
 );
-    assign sign = a <= b;
+    assign sign = (mode == 0) ? (a[9:0] <= b[9:0]) : (a <= b);
     assign zero = sign;
 endmodule
