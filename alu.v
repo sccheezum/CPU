@@ -20,10 +20,68 @@ module no_ops (
         //Start 4'3" by John Cage...
     end
 endmodule
+
 //Circuit 3: Jump Unconditional
+module jmp_ops (
+    input clk,
+    input [19:0] jmp_addr,
+    output reg [19:0] prog_point
+);
+
+always @(posedge clk) begin
+    prog_point <= jmp_addr;
+end
+
+endmodule
+
 //Circuit 4: Jump Zero
+module jmpz_ops (
+    input clk,
+    input [19:0] jmp_addr,
+    input zero,
+    output reg [19:0] prog_point
+);
+
+always @(posedge clk) begin
+    if (zero) begin
+        prog_point <= jmp_addr;
+    end
+end
+
+endmodule
+
 //Circuit 5: Jump Sign
+module jmps_ops (
+    input clk,
+    input [19:0] jmp_addr,
+    input sign,
+    output reg [19:0] prog_point
+);
+
+always @(posedge clk) begin
+    if (sign) begin
+        prog_point <= jmp_addr;
+    end
+end
+
+endmodule
+
 //Circuit 6: Jump Zero-Sign
+module jmpzs_ops (
+    input clk,
+    input [19:0] jmp_addr,
+    input zero,
+    output reg [19:0] prog_point
+);
+
+always @(posedge clk) begin
+    if (zero && sign) begin
+        prog_point <= jmp_addr;
+    end
+end
+
+endmodule
+
 //Circuit 7: Load Status Register
 //Circuit 8: XOR Status Register
 
