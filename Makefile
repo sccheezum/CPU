@@ -17,6 +17,10 @@ all:
 	vvp inc_reg_tb.vvp -vcd
 	gtkwave inc_reg_tb.vcd
 	
+	iverilog -o pointer_segment_regs_tb.vvp pointer_segment_regs_tb.v
+	vvp pointer_segment_regs_tb.vvp -vcd
+	gtkwave pointer_segment_regs_tb.vcd
+	
 alu:
 	iverilog -o alu_tb.vvp alu_tb.v
 	vvp alu_tb.vvp -vcd
@@ -33,7 +37,9 @@ inc_reg:
 	gtkwave inc_reg_tb.vcd
 
 pointer_segment_registers:
-#Need testbench first
+	iverilog -o pointer_segment_regs_tb.vvp pointer_segment_regs_tb.v
+	vvp pointer_segment_regs_tb.vvp -vcd
+	gtkwave pointer_segment_regs_tb.vcd
 
 programs:
 	iverilog -o programs.vvp programs.v
