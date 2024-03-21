@@ -489,24 +489,31 @@ always @(posedge clk or posedge reset) begin
                     end
                     NOT_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
+                        // Zero flag?
                     end
                     AND_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
+                        // Zero flag?
                     end
                     OR_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
+                        // Zero flag?
                     end
                     XOR_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
+                        // Zero flag?
                     end
                     SHFTR_OP: begin
                         register[instruction[7:5]] <= alu_result1;
+                        // Zero flag?
                     end
                     SHFTL_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
+                        // Zero and Carry flag?
                     end
                     ROTR_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
+                        // Zero and Carry flag?
                     end
                     ROTL_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
@@ -517,6 +524,7 @@ always @(posedge clk or posedge reset) begin
                     end
                     INC_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
+                        // Zero and Carry flag?
                     end
                     DEC_OP: begin
                         
