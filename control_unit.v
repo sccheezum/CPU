@@ -10,6 +10,7 @@ Ursinus College
 `include "gen_reg.v"
 `include "inc_reg.v"
 `include "pointer_segment_registers.v"
+`include "s_reg.v"
 
 module ControlUnit (
     input wire clk,              // Clock input
@@ -34,6 +35,61 @@ module ControlUnit (
     output reg execute_enable,   // Enable signal for instruction execute stage
     output reg write_back_enable // Enable signal for write-back stage
 );
+
+// Instantiate the status register module
+s_reg status_reg(
+    .zf(zero_flag),
+    .sf(sign_flag),
+    .of(overflow_flag),
+    .uf(underflow_flag),
+    .cffw(carry_flag_fw),
+    .cfhl(carry_flag_hwl),
+    .cfhh(carry_flag_hwh),
+    .df(div_by_zero_flag),
+    .hwf(half_word_mode),
+    .srf(same_reg_flag),
+    .mvf(mem_violation_flag),
+    .mcf(mem_corruption_flag),
+    .tf(trap_mode_flag),
+    .clk(clk),
+    .dzf(),   // Connect delayed versions of flags as needed
+    .dsf(),
+    .dof(),
+    .duf(),
+    .dcffw(),
+    .dcfhl(),
+    .dcfhh(),
+    .ddf(),
+    .dhwf(),
+    .dsrf(),
+    .dmvf(),
+    .dmcf(),
+    .dtf()
+);
+
+// Instantiate the increment register module with placeholders for mem_access and mem_correction
+inc_reg inc_registers(
+    .clk(clk),
+    .reset(reset),
+    .instruction_complete(decode_enable),
+    .mem_access(),     // Placeholder for mem_access
+    .mem_correction(), // Placeholder for mem_correction
+    .instruction_count(), 
+    .memory_access_count(), 
+    .memory_correction_count()
+);
+
+// Instantiate the general register module
+gen_reg general_registers(
+    .clk(clk),
+    .addr_sel(2'b00), // Always select full word access
+    .addr(instruction[13:11]), // Use instruction bits to select register address
+    .data_in(), // Data to be written into the register (unused in ControlUnit)
+    .data_out() // Data read from the selected register
+);
+
+// Connect the general registers to the registers array in ControlUnit
+assign registers = gen_registers;
 
 // Define instruction opcodes (instruction[19:14])
 parameter TRAP_OP = 6'b000000; // TRAP: Enters trap mode
