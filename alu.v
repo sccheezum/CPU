@@ -233,6 +233,7 @@ endmodule
 
 //Circuit 1: Shift Right (Courtesy of Isabelle Son)
 module shftr_ops (
+    input mode,
     input [19:0] a,
     output reg [19:0] out,
     output reg carry,
@@ -240,12 +241,22 @@ module shftr_ops (
 );
 
     integer i;
+    integer CARRY_DIGIT;
+    integer MAX_DIGIT;
 
     always @(a) begin
-        carry = a[19];
+        CARRY_DIGIT = (mode == 1) ? (19) : (9);
+        MAX_DIGIT = (mode == 1) ? (20) : (10);
+        carry = a[CARRY_DIGIT];
         out[0] = 0;
-        for (i = 1; i < 20; i++) begin
+        for (i = 1; i < MAX_DIGIT; i++) begin
             out[i] = a[i-1];
+        end
+    //If in Half Mode, Puts 0's in the Upper Register
+        if (mode == 0) begin
+            for (i = 10; i < 20; i++) begin
+                out[i] = 0;
+            end
         end
 
         zero = !(|out);
@@ -255,6 +266,7 @@ endmodule
 
 //Circuit 2: Shift Left
 module shftl_ops (
+    input mode,
     input [19:0] a,
     output reg [19:0] out,
     output reg carry,
@@ -262,12 +274,20 @@ module shftl_ops (
 );
 
     integer i;
+    integer LAST_DIGIT;
 
     always @(a) begin
+        LAST_DIGIT = (mode == 1) ? (19) : (9);
         carry = a[0];
-        out[19] = 0;
-        for (i = 19; i > 0; i--) begin
+        out[LAST_DIGIT] = 0;
+        for (i = LAST_DIGIT; i > 0; i--) begin
             out[i-1] = a[i];
+        end
+    //If in Half Mode, Puts 0's in the Upper Register
+        if (mode == 0) begin
+            for (i = 10; i < 20; i++) begin
+                out[i] = 0;
+            end
         end
 
         zero = !(|out);

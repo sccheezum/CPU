@@ -181,6 +181,7 @@ endmodule
 //Circuit 1: Shift Right
 module shftr_ops_tb;
     reg clk;
+    reg mode;
     reg [19:0] a;
     wire [19:0] out;
     wire carry;
@@ -192,6 +193,7 @@ module shftr_ops_tb;
 
     shftr_ops x0 (
         .a(a),
+        .mode(mode),
         .out(out),
         .carry(carry),
         .zero(zero)
@@ -199,11 +201,13 @@ module shftr_ops_tb;
 
     initial begin
         a <= 0;
-        $monitor ("a: %b - out: %b - carry: %b - zero: %b", a, out, carry, zero);
+        mode <= 0;
+        $monitor ("a: %b - out: %b - carry: %b - zero: %b - mode: %b", a, out, carry, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 
@@ -212,6 +216,7 @@ endmodule
 //Circuit 2: Shift Left
 module shftl_ops_tb;
     reg clk;
+    reg mode;
     reg [19:0] a;
     wire [19:0] out;
     wire carry;
@@ -223,6 +228,7 @@ module shftl_ops_tb;
 
     shftl_ops x0 (
         .a(a),
+        .mode(mode),
         .out(out),
         .carry(carry),
         .zero(zero)
@@ -230,11 +236,13 @@ module shftl_ops_tb;
 
     initial begin
         a <= 0;
-        $monitor ("a: %b - out: %b - carry: %b - zero: %b", a, out, carry, zero);
+        mode <= 0;
+        $monitor ("a: %b - out: %b - carry: %b - zero: %b - mode: %b", a, out, carry, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 endmodule
@@ -259,7 +267,7 @@ module rotr_ops_tb;
     initial begin
         a <= 0;
         mode <= 0;
-        $monitor ("a: %b - out: %b ", a, out);
+        $monitor ("a: %b - out: %b - mode: %b ", a, out, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
             #10 clk <= ~clk;
@@ -272,6 +280,7 @@ endmodule
 //Circuit 4: Rotate Left
 module rotl_ops_tb;
     reg clk;
+    reg mode;
     reg [19:0] a;
     wire [19:0] out;
 
@@ -280,17 +289,20 @@ module rotl_ops_tb;
     integer SEED = 10559;
 
     rotl_ops x0 (
+        .mode(mode),
         .a(a),
         .out(out)
     );
 
     initial begin
         a <= 0;
-        $monitor ("a: %b - out: %b ", a, out);
+        mode <= 0;
+        $monitor ("a: %b - out: %b - mode: %b", a, out, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 endmodule
