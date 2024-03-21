@@ -14,9 +14,9 @@ Ursinus College
 //Circuit 1: Trap Mode
 //Circuit 2: No Operation 
 module no_ops (
-    input clk,
+    input clk
 );
-    always @(posedge clk | negedge clk) begin
+    always @(posedge clk) begin
         //Start 4'3" by John Cage...
     end
 endmodule

@@ -5,34 +5,37 @@ Ursinus College
 @author Michael Cummins
 @purpose Test bench for the control unit
 */
-
-`include "control_unit.v"
 `default_nettype none
+`include "control_unit.v"
 `timescale 1ns / 1ps
 
 module program;
 
-    reg clk;                  // Clock input
-    reg reset;                // Reset input
-    reg [19:0] instruction;   // Current instruction
-    reg zero_flag;            // Zero flag
-    reg sign_flag;            // Sign flag
-    reg overflow_flag;        // Overflow flag
-    reg underflow_flag;       // Underflow flag
-    reg carry_flag_fw;        // Carry flag for full word mode
-    reg carry_flag_hwl;       // Carry flag for half-word mode for low bits
-    reg carry_flag_hwh;       // Carry flag for half-word mode for high bits
-    reg div_by_zero_flag;     // Division by zero flag
-    reg half_word_mode;       // Half-word mode flag
-    reg same_reg_flag;        // Same register flag
-    reg mem_violation_flag;   // Memory violation flag
-    reg mem_corruption_flag;  // Memory corruption flag
-    reg trap_mode_flag;       // Trap mode flag
-    reg [19:0] registers [5:0]; // General Registers
-    wire fetch_enable;        // Enable signal for instruction fetch stage
-    wire decode_enable;       // Enable signal for instruction decode stage
-    wire execute_enable;      // Enable signal for instruction execute stage
-    wire write_back_enable;   // Enable signal for write-back stage
+    reg clk;                        // Clock input
+    reg reset;                      // Reset input
+
+    reg [19:0] instruction;         // Current instruction
+
+    reg zero_flag;                  // Zero flag
+    reg sign_flag;                  // Sign flag
+    reg overflow_flag;              // Overflow flag
+    reg underflow_flag;             // Underflow flag
+    reg carry_flag_fw;              // Carry flag for full word mode
+    reg carry_flag_hwl;             // Carry flag for half-word mode for low bits
+    reg carry_flag_hwh;             // Carry flag for half-word mode for high bits
+    reg div_by_zero_flag;           // Division by zero flag
+    reg half_word_mode;             // Half-word mode flag
+    reg same_reg_flag;              // Same register flag
+    reg mem_violation_flag;         // Memory violation flag
+    reg mem_corruption_flag;        // Memory corruption flag
+    reg trap_mode_flag;             // Trap mode flag
+
+    reg [19:0] registers [0:5];     // General Registers
+
+    wire fetch_enable;              // Enable signal for instruction fetch stage
+    wire decode_enable;             // Enable signal for instruction decode stage
+    wire execute_enable;            // Enable signal for instruction execute stage
+    wire write_back_enable;         // Enable signal for write-back stage
 
     control_unit xo (
         .clk(clk),                  // Clock input
@@ -60,7 +63,7 @@ module program;
 
     // Stimulus generation
     initial begin
-        $dumpfile("dump.vcd");
+        $dumpfile("program.vcd");
         $dumpvars(0, program);
 
         // Initialize inputs

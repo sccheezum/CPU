@@ -35,5 +35,10 @@ inc_reg:
 pointer_segment_registers:
 #Need testbench first
 
+programs:
+	iverilog -o programs.vvp programs.v
+	vvp programs.vvp -vcds
+	gtkwave programs.vcd
+
 clean:
 	rm -f *.vcd *.vvp

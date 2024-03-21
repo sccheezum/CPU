@@ -29,11 +29,11 @@ module control_unit (
     input wire mem_violation_flag, // Memory violation flag
     input wire mem_corruption_flag, // Memory corruption flag
     input wire trap_mode_flag,   // Trap mode flag
-    input wire [19:0] registers [5:0]; // General Registers
-    output reg fetch_enable,     // Enable signal for instruction fetch stage
-    output reg decode_enable,    // Enable signal for instruction decode stage
-    output reg execute_enable,   // Enable signal for instruction execute stage
-    output reg write_back_enable // Enable signal for write-back stage
+    input wire [5:0] registers, // General Registers
+    output wire fetch_enable,     // Enable signal for instruction fetch stage
+    output wire decode_enable,    // Enable signal for instruction decode stage
+    output wire execute_enable,   // Enable signal for instruction execute stage
+    output wire write_back_enable // Enable signal for write-back stage
 );
 
 // Instantiate the status register module
@@ -353,7 +353,6 @@ always @(posedge clk or posedge reset) begin
 
                         alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
-                    default: // Handle default case
                 endcase
                 // Update state and enable next stage
                 state <= EXECUTE_STATE;
@@ -534,7 +533,6 @@ always @(posedge clk or posedge reset) begin
                                 .zero(zero_flag)
                             );
                         end
-                        default: // Handle default case
                     endcase
                 end
                 // Update state and enable next stage
@@ -620,7 +618,7 @@ always @(posedge clk or posedge reset) begin
                         
                     end
                     SUB_OP: begin
-                        /
+                        
                     end
                     SUBC_OP: begin
                         
@@ -640,7 +638,6 @@ always @(posedge clk or posedge reset) begin
                     LET_OP: begin
                         // Sign and zero flag?
                     end
-                    default: // Handle default case
                 endcase
                 // Write back results to GPR or update PC
                 // Update state and enable next stage
@@ -649,7 +646,6 @@ always @(posedge clk or posedge reset) begin
                 // Disable previous stage
                 write_back_enable <= 1'b0;
             end
-            default: // Handle default case
         endcase
     end
 end
