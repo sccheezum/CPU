@@ -302,6 +302,7 @@ module inc_ops (
     end
 
 endmodule
+
 //Circuit 2: Decrementer
 module dec_ops (
     input [19:0] a,
@@ -327,17 +328,95 @@ module dec_ops (
     end
 
 endmodule
+
 //Circuit 3: Add without Carry
+module add_wc_ops (
+    input mode, 
+    input [19:0] a,
+    input [19:0] b,
+    output reg [19:0] c,
+    output reg zero
+);
+
+   integer i;
+   integer WORD_LENGTH;
+
+   always @(a or b) begin
+    //Full-Word Mode (Iterates Normally through the entire 20-bit register)
+      if (mode == 1) begin
+        WORD_LENGTH = 20;
+        for (i = 0; i < WORD_LENGTH; i++) begin
+            c[i] = a[i] ^ b[i];
+        end
+    //Half-Word Mode (Iterates Through the 20-bit register for the first 10 bits, then leaves the rest blank)
+      end else begin
+        WORD_LENGTH = 10;
+        for (i = 0; i < WORD_LENGTH; i++) begin
+            c[i] = a[i] ^ b[i];
+        end
+        for (i = WORD_LENGTH; i < 20; i++) begin
+            c[i] = 0;
+        end
+      end  
+
+      zero = !(|c);
+   end  
+endmodule
+
 //Circuit 4: Add with Carry
-//Circuit 5: Subtractor without Carry
-//Circuit 6: Subtractor with Carry
-module sub_c_ops (
+module add_c_ops (
+    input mode,
     input [19:0] a,
     input [19:0] b,
     output [19:0] c
 );
 //Implementing Complement Subtraction
-    assign c = a + (~b + 1);
+    assign c = (mode == 0) ? (a[9:0] + b[9:0]) : (a + b);
+endmodule
+
+//Circuit 5: Subtractor without Carry
+module sub_wc_ops (
+    input mode, 
+    input [19:0] a,
+    input [19:0] b,
+    output reg [19:0] c,
+    output reg zero
+);
+
+   integer i;
+   integer WORD_LENGTH;
+
+   always @(a or b) begin
+    //Full-Word Mode (Iterates Normally through the entire 20-bit register)
+      if (mode == 1) begin
+        WORD_LENGTH = 20;
+        for (i = 0; i < WORD_LENGTH; i++) begin
+            c[i] = a[i] ^ b[i];
+        end
+    //Half-Word Mode (Iterates Through the 20-bit register for the first 10 bits, then leaves the rest blank)
+      end else begin
+        WORD_LENGTH = 10;
+        for (i = 0; i < WORD_LENGTH; i++) begin
+            c[i] = a[i] ^ b[i];
+        end
+        for (i = WORD_LENGTH; i < 20; i++) begin
+            c[i] = 0;
+        end
+      end  
+
+      zero = !(|c);
+   end  
+endmodule
+
+//Circuit 6: Subtractor with Carry
+module sub_c_ops (
+    input mode,
+    input [19:0] a,
+    input [19:0] b,
+    output [19:0] c
+);
+//Implementing Complement Subtraction
+    assign c = (mode == 0) ? (a[9:0] + (~b[9:0] + 1)) : (a + (~b + 1));
 endmodule
 
 
@@ -347,49 +426,70 @@ endmodule
 
 //Circuit 1: Equal To
 module eq_ops (
+    input mode,
     input [19:0] a,
     input [19:0] b,
     output zero
 );
-    assign zero = (a == b);
+//If the mode is in Half-Word, then it compares the lower 10-bits of the register
+//Otherwise it compares all 20-bits of the register
+//If A = B then the zero flag is 1, otherwise 0
+    assign zero = (mode == 0) ? (a[9:0] == b[9:0]) : (a == b);
 endmodule
 
 //Circuit 2: Greater Than
 module gt_ops (
+    input mode,
     input [19:0] a,
     input [19:0] b,
     output sign
 );
-    assign sign = a <= b;
+//If the mode is in Half-Word, then it compares the lower 10-bits of the register
+//Otherwise it compares all 20-bits of the register
+//Because the sign flag is set to 0 if A > B, then taking A <=B where
+//the sign flag is set to 1, satisfies this operation :)
+    assign sign = (mode == 0) ? (a[9:0] <= b[9:0]) : (a <= b);
 endmodule
 
 //Circuit 3: Less Than
 module lt_ops (
+    input mode,
     input [19:0] a,
     input [19:0] b,
     output sign
 );
-    assign sign = a < b;
+//If the mode is in Half-Word, then it compares the lower 10-bits of the register
+//Otherwise it compares all 20-bits of the register
+//If A < B then the sign flag is set to 1, otherwise 0
+    assign sign = (mode == 0) ? (a[9:0] < b[9:0]) : (a < b);
 endmodule
 
 //Circuit 4: Greater Than or Equal To
 module get_ops (
+    input mode,
     input [19:0] a,
     input [19:0] b,
     output sign,
     output zero
 );
-    assign zero = a >= b;
+//If the mode is in Half-Word, then it compares the lower 10-bits of the register
+//Otherwise it compares all 20-bits of the register
+//Since if A >= B then it sets zero to 1, and sign is set to 0 from zero
+    assign zero = (mode == 0) ? (a[9:0] >= b[9:0]) : (a >= b);
     assign sign = ~zero;
 endmodule
 
 //Circuit 5: Less Than or Equal To
 module let_ops (
+    input mode,
     input [19:0] a,
     input [19:0] b,
     output sign,
     output zero
 );
-    assign sign = a <= b;
+//If the mode is in Half-Word, then it compares the lower 10-bits of the register
+//Otherwise it compares all 20-bits of the register
+//Since if A <= B then both flags are set to 1
+    assign sign = (mode == 0) ? (a[9:0] <= b[9:0]) : (a <= b);
     assign zero = sign;
 endmodule
