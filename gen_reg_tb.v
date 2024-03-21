@@ -8,7 +8,7 @@ Ursinus College
 
 `include "gen_reg.v"
 `default_nettype none
-`timescale 1ns / 1ps
+`timescale 1ns / 1ns
 
 module gen_reg_tb;
 

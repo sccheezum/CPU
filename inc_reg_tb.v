@@ -8,7 +8,7 @@ Ursinus College
 
 `include "inc_reg.v"
 `default_nettype none
-`timescale 1ns / 1ps
+`timescale 1ns / 1ns
 
 module inc_reg_tb;
 
@@ -34,11 +34,16 @@ module inc_reg_tb;
         .memory_correction_count(memory_correction_count)
     );
 
-    always #((CLK_PERIOD/2)) clk = ~clk;
+     always #((CLK_PERIOD / 2)) clk = ~clk;
 
     initial begin
         clk = 0;
+
+        $dumpfile("inc_reg_tb");
+        $dumpvars(1,x0);
+
         reset = 1;
+
         instruction_complete = 0;
         mem_access = 0;
         mem_correction = 0;
@@ -47,20 +52,21 @@ module inc_reg_tb;
         #100;
 
         instruction_complete = 1;
-        #1;
+        #10;
         instruction_complete = 0; 
         #10;
 
         mem_access = 1;
-        #1;
+        #10;
         mem_access = 0; 
         #10;
 
         mem_correction = 1;
-        #1;
+        #10;
         mem_correction = 0; 
+        #10
 
-        $stop;
+        $finish;
     end
 
 endmodule

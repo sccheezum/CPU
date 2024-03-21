@@ -1,0 +1,65 @@
+$date
+	Thu Mar 21 16:46:02 2024
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ns
+$end
+$scope module gen_reg_tb $end
+$scope module x0 $end
+$var wire 10 ! addr [9:0] $end
+$var wire 2 " addr_sel [1:0] $end
+$var wire 1 # clk $end
+$var wire 20 $ data_in [19:0] $end
+$var reg 20 % data_out [19:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+bx %
+b10101010101010101010 $
+0#
+b0 "
+b0 !
+$end
+#5
+1#
+#10
+0#
+#15
+b10101010101010101010 %
+1#
+#20
+0#
+b11001100110011001100 $
+b1 !
+b1 "
+#25
+b0xxxxxxxxxx %
+1#
+#30
+0#
+#35
+b11001100 %
+1#
+#40
+0#
+b11110000111100001111 $
+b10 !
+b10 "
+#45
+b0xxxxxxxxxx %
+1#
+#50
+0#
+#55
+b1100001111 %
+1#
+#60
+0#
