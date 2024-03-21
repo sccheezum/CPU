@@ -332,6 +332,7 @@ endmodule
 //Circuit 5: Subtractor without Carry
 //Circuit 6: Subtractor with Carry
 module sub_c_ops (
+    input mode,
     input [19:0] a,
     input [19:0] b,
     output [19:0] c
@@ -377,6 +378,7 @@ endmodule
 
 //Circuit 4: Greater Than or Equal To
 module get_ops (
+    input mode,
     input [19:0] a,
     input [19:0] b,
     output sign,
@@ -388,6 +390,7 @@ endmodule
 
 //Circuit 5: Less Than or Equal To
 module let_ops (
+    input mode,
     input [19:0] a,
     input [19:0] b,
     output sign,
