@@ -338,7 +338,7 @@ module sub_c_ops (
     output [19:0] c
 );
 //Implementing Complement Subtraction
-    assign c = a + (~b + 1);
+    assign c = (mode == 0) ? (a[9:0] + (~b[9:0] + 1)) : (a + (~b + 1));
 endmodule
 
 
