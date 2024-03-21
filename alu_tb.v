@@ -242,6 +242,7 @@ endmodule
 //Circuit 3: Rotate Right
 module rotr_ops_tb;
     reg clk;
+    reg mode;
     reg [19:0] a;
     wire [19:0] out;
 
@@ -250,17 +251,20 @@ module rotr_ops_tb;
     integer SEED = 10559;
 
     rotr_ops x0 (
+        .mode(mode),
         .a(a),
         .out(out)
     );
 
     initial begin
         a <= 0;
+        mode <= 0;
         $monitor ("a: %b - out: %b ", a, out);
 
         for (i = 0; i < MAX_ITERS; i++)begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 endmodule

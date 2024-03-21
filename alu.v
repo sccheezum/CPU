@@ -277,37 +277,55 @@ endmodule
 
 //Circuit 3: Rotate Right
 module rotr_ops (
+    input mode,
     input [19:0] a, 
     output reg [19:0] out
 );
 
     integer i;
+    integer LAST_VALUE;
 
     always @(a) begin 
-    //Setting the last value of the input to the last value of the output
-        out[0] = a[19];
+        LAST_VALUE = (mode == 1) ? (19) : (9);
+    //Setting the last value of the input to the first value of the output
+        out[0] = a[LAST_VALUE];
 
     //Iterating through the rest of the input
-        for (i = 19; i > 0; i--) begin
+        for (i = LAST_VALUE; i > 0; i--) begin
             out[i] = a[i-1];
+        end
+    //If in Half Mode, Puts 0's in the Upper Register
+        if (mode == 0) begin
+            for (i = 10; i < 20; i++) begin
+                out[i] = 0;
+            end
         end
     end
 endmodule
 
 //Circuit 4: Rotate Left
 module rotl_ops (
+    input mode,
     input [19:0] a, 
     output reg [19:0] out
 );
 
     integer i;
+    integer LAST_VALUE;
 
     always @(a) begin 
+        LAST_VALUE = (mode == 1) ? (19) : (9);
     //Setting the first value of the input to the last value of the output
-        out[19] = a[0];
+        out[LAST_VALUE] = a[0];
     //Iterating through the rest of the input
-        for (i = 0; i < 19; i++)begin
+        for (i = 0; i < LAST_VALUE; i++)begin
             out[i] = a[i+1];
+        end
+    //If in Half Mode, Puts 0's in the Upper Register
+        if (mode == 0) begin
+            for (i = 10; i < 20; i++) begin
+                out[i] = 0;
+            end
         end
     end
 endmodule
