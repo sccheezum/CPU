@@ -291,7 +291,13 @@ always @(posedge clk or posedge reset) begin
                         alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     DEC_OP: begin
-                        // assign all necessary data
+                        alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        alu_result1 <= registers[instruction[7:5]]; // Destination register 1 address
+                        carry_flag_fw = 1'b0;
+                        zero_flag = 1'b0;
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     ADD_OP: begin
                         // assign all necessary data
@@ -472,7 +478,12 @@ always @(posedge clk or posedge reset) begin
                             );
                         end
                         DEC_OP: begin
-                            // Handle DEC instruction
+                            dec_ops x0(
+                                .a(alu_src1),
+                                .out(alu_result1),
+                                .carry(carry_flag_fw),
+                                .zero(zero_flag)
+                            );
                         end
                         ADD_OP: begin
                             // Handle ADD instruction
@@ -599,7 +610,8 @@ always @(posedge clk or posedge reset) begin
                         // Zero and Carry flag?
                     end
                     DEC_OP: begin
-                        
+                        registers[instruction[7:5]] <= alu_result1;
+                        // Zero and Carry flag?
                     end
                     ADD_OP: begin
                         
