@@ -103,6 +103,8 @@ always @(posedge clk or posedge reset) begin
         decode_enable <= 1'b0;
         execute_enable <= 1'b0;
         write_back_enable <= 1'b0;
+        //Disable trap state
+        trap_mode_flag <= 1'b0;
     end else begin
         // State transition logic
         case (state)
@@ -119,7 +121,13 @@ always @(posedge clk or posedge reset) begin
                 case (instruction[19:14])
                     //ALU Opcode
                     TRAP_OP: begin
-                        // assign all necessary data
+                        // Set the trap_mode_flag high to indicate trap mode
+                        trap_mode_flag <= 1'b1;
+                        // Disable further execution by setting fetch_enable to 0
+                        fetch_enable <= 1'b0;
+                        // Disable further decoding and execution
+                        decode_enable <= 1'b0;
+                        execute_enable <= 1'b0;
                     end
                     NOP_OP: begin
                         // No operation, so no specific action needed
@@ -292,168 +300,176 @@ always @(posedge clk or posedge reset) begin
                 decode_enable <= 1'b0;
             end
             EXECUTE_STATE: begin
+                if (trap_mode_flag) begin
+                    // TRAP instruction executed, so no operation needed
+                    // Transition back to fetch state
+                    state <= FETCH_STATE;
+                    fetch_enable <= 1'b1; // Enable instruction fetching
+                    execute_enable <= 1'b0; // Disable execution
+                end else begin
                 // Execute ALU operation or control flow operation
-                case (instruction[19:14])
-                    //ALU Opcode
-                    TRAP_OP: begin
-                        // Handle TRAP instruction
-                    end
-                    NOP_OP: begin
-                        no_ops x0(
-                            .clk(clk)
+                    case (instruction[19:14])
+                        //ALU Opcode
+                        TRAP_OP: begin
+                            // Handle TRAP instruction
+                        end
+                        NOP_OP: begin
+                            no_ops x0(
+                                .clk(clk)
+                            );
+                        end
+                        JMP_OP: begin
+                            // Handle JMP instruction
+                        end
+                        JMPZ_OP: begin
+                            // Handle JMPZ instruction
+                        end
+                        JMPS_OP: begin
+                            // Handle JMPS instruction
+                        end
+                        JMPZS_OP: begin
+                            // Handle JMPZS instruction
+                        end
+                        LSTAT_OP: begin
+                            // Handle LSTAT instruction
+                        end
+                        XSTAT_OP: begin
+                            // Handle XSTAT instruction
+                        end
+                        NOT_OP: begin
+                            not_ops x0(
+                                .mode(alu_mode), 
+                                .a(alu_src1),
+                                .c(alu_result1),
+                                .zero(zero_flag)
                         );
-                    end
-                    JMP_OP: begin
-                        // Handle JMP instruction
-                    end
-                    JMPZ_OP: begin
-                        // Handle JMPZ instruction
-                    end
-                    JMPS_OP: begin
-                        // Handle JMPS instruction
-                    end
-                    JMPZS_OP: begin
-                        // Handle JMPZS instruction
-                    end
-                    LSTAT_OP: begin
-                        // Handle LSTAT instruction
-                    end
-                    XSTAT_OP: begin
-                        // Handle XSTAT instruction
-                    end
-                    NOT_OP: begin
-                        not_ops x0(
-                            .mode(alu_mode), 
-                            .a(alu_src1),
-                            .c(alu_result1),
-                            .zero(zero_flag)
-                    );
-                    end
-                    AND_OP: begin
-                        and_ops x0(
-                            .mode(alu_mode),
-                            .a(alu_src1),
-                            .b(alu_src2),
-                            .c(alu_result1),
-                            .zero(zero_flag)
-                        );
-                    end
-                    OR_OP: begin
-                        or_ops x0(
-                            .mode(alu_mode),
-                            .a(alu_src1),
-                            .b(alu_src2),
-                            .c(alu_result1),
-                            .zero(zero_flag)
-                        );
-                    end
-                    XOR_OP: begin
-                        xor_ops x0(
-                            .mode(alu_mode),
-                            .a(alu_src1),
-                            .b(alu_src2),
-                            .c(alu_result1),
-                            .zero(zero_flag)
-                        );
-                    end
-                    SHFTR_OP: begin
-                        shiftr_ops x0 (
-                            .a(alu_src1),
-                            .out(alu_result1),
-                            .carry(carry_flag_fw),
-                            .zero(zero_flag)
-                        );
-                    end
-                    SHFTL_OP: begin
-                        shiftl_ops x0 (
-                            .a(alu_src1),
-                            .out(alu_result1),
-                            .carry(carry_flag_fw),
-                            .zero(zero_flag)
-                        );
-                    end
-                    ROTR_OP: begin
-                        rotr_ops x0 (
-                            .a(alu_src1),
-                            .out(alu_result1)
-                        );
-                    end
-                    ROTL_OP: begin
-                        rotl_ops x0 (
-                            .a(alu_src1),
-                            .out(alu_result1)
-                        );
-                    end
-                    SWAP_OP: begin
-                        swap_ops x0 (
-                            .a(alu_src1),
-                            .b(alu_src2),
-                            .out_a(alu_result1),
-                            .out_b(alu_result2)
-                        );
-                    end
-                    INC_OP: begin
-                        inc_ops x0 (
-                            .a(alu_src1),
-                            .out(alu_result1),
-                            .carry(carry_flag_fw),
-                            .zero(zero_flag)
-                        );
-                    end
-                    DEC_OP: begin
-                        // Handle DEC instruction
-                    end
-                    ADD_OP: begin
-                        // Handle ADD instruction
-                    end
-                    ADDC_OP: begin
-                        // Handle ADDC instruction
-                    end
-                    SUB_OP: begin
-                        // Handle SUB instruction
-                    end
-                    SUBC_OP: begin
-                        // Handle SUBC instruction
-                    end
-                    EQ_OP: begin
-                        eq_ops x0(
-                            .a(alu_src1),
-                            .b(alu_src2),
-                            .zero(zero_flag)
-                        );
-                    end
-                    GT_OP: begin
-                        gt_ops x0(
-                            .a(alu_src1),
-                            .b(alu_src2),
-                            .sign(sign_flag)
-                        );
-                    end
-                    LT_OP: begin
-                        lt_ops x0(
-                            .a(alu_src1),
-                            .b(alu_src2),
-                            .sign(sign_flag)
-                        );
-                    end
-                    GET_OP: begin
-                        get_ops x0(
-                            .a(alu_src1),
-                            .b(alu_src2),
-                            .sign(sign_flag),
-                            .zero(zero_flag)
-                        );
-                    end
-                    LET_OP: begin
-                        let_ops x0(
-                            .a(alu_src1),
-                            .b(alu_src2),
-                            .sign(sign_flag),
-                            .zero(zero_flag)
-                        );
-                    end
-                    default: // Handle default case
-                endcase
+                        end
+                        AND_OP: begin
+                            and_ops x0(
+                                .mode(alu_mode),
+                                .a(alu_src1),
+                                .b(alu_src2),
+                                .c(alu_result1),
+                                .zero(zero_flag)
+                            );
+                        end
+                        OR_OP: begin
+                            or_ops x0(
+                                .mode(alu_mode),
+                                .a(alu_src1),
+                                .b(alu_src2),
+                                .c(alu_result1),
+                                .zero(zero_flag)
+                            );
+                        end
+                        XOR_OP: begin
+                            xor_ops x0(
+                                .mode(alu_mode),
+                                .a(alu_src1),
+                                .b(alu_src2),
+                                .c(alu_result1),
+                                .zero(zero_flag)
+                            );
+                        end
+                        SHFTR_OP: begin
+                            shiftr_ops x0 (
+                                .a(alu_src1),
+                                .out(alu_result1),
+                                .carry(carry_flag_fw),
+                                .zero(zero_flag)
+                            );
+                        end
+                        SHFTL_OP: begin
+                            shiftl_ops x0 (
+                                .a(alu_src1),
+                                .out(alu_result1),
+                                .carry(carry_flag_fw),
+                                .zero(zero_flag)
+                            );
+                        end
+                        ROTR_OP: begin
+                            rotr_ops x0 (
+                                .a(alu_src1),
+                                .out(alu_result1)
+                            );
+                        end
+                        ROTL_OP: begin
+                            rotl_ops x0 (
+                                .a(alu_src1),
+                                .out(alu_result1)
+                            );
+                        end
+                        SWAP_OP: begin
+                            swap_ops x0 (
+                                .a(alu_src1),
+                                .b(alu_src2),
+                                .out_a(alu_result1),
+                                .out_b(alu_result2)
+                            );
+                        end
+                        INC_OP: begin
+                            inc_ops x0 (
+                                .a(alu_src1),
+                                .out(alu_result1),
+                                .carry(carry_flag_fw),
+                                .zero(zero_flag)
+                            );
+                        end
+                        DEC_OP: begin
+                            // Handle DEC instruction
+                        end
+                        ADD_OP: begin
+                            // Handle ADD instruction
+                        end
+                        ADDC_OP: begin
+                            // Handle ADDC instruction
+                        end
+                        SUB_OP: begin
+                            // Handle SUB instruction
+                        end
+                        SUBC_OP: begin
+                            // Handle SUBC instruction
+                        end
+                        EQ_OP: begin
+                            eq_ops x0(
+                                .a(alu_src1),
+                                .b(alu_src2),
+                                .zero(zero_flag)
+                            );
+                        end
+                        GT_OP: begin
+                            gt_ops x0(
+                                .a(alu_src1),
+                                .b(alu_src2),
+                                .sign(sign_flag)
+                            );
+                        end
+                        LT_OP: begin
+                            lt_ops x0(
+                                .a(alu_src1),
+                                .b(alu_src2),
+                                .sign(sign_flag)
+                            );
+                        end
+                        GET_OP: begin
+                            get_ops x0(
+                                .a(alu_src1),
+                                .b(alu_src2),
+                                .sign(sign_flag),
+                                .zero(zero_flag)
+                            );
+                        end
+                        LET_OP: begin
+                            let_ops x0(
+                                .a(alu_src1),
+                                .b(alu_src2),
+                                .sign(sign_flag),
+                                .zero(zero_flag)
+                            );
+                        end
+                        default: // Handle default case
+                    endcase
+                end
                 // Update state and enable next stage
                 state <= WRITE_BACK_STATE;
                 write_back_enable <= 1'b1;
