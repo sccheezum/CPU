@@ -149,7 +149,7 @@ reg [19:0] alu_result1, alu_result2; // Result from ALU operation
 reg [19:0] pc_next; // Next value for Program Counter
 reg jump_flag; // Flag to control jump operation
 
-always @(posedge clk or posedge reset) begin
+always @(posedge clk) begin
     if (reset) begin
         // Reset the state to FETCH_STATE
         state <= FETCH_STATE;
