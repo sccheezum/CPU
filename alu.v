@@ -279,23 +279,30 @@ endmodule
 
 //Circuit 1: Incrementer (Courtesy of Isabelle Son)
 module inc_ops (
+    input mode,
     input [19:0] a,
     output reg [19:0] out,
-    //overflow
     output reg carry,
     output reg zero
 );
 
     integer i;
+    integer MAX_BITS;
 
     always @(a) begin
+        assign MAX_BITS = (mode == 1) ? (19) : (9);
         carry = 1;
-        for (i = 19; i >= 0; i--) begin
+        for (i = MAX_BITS; i >= 0; i--) begin
             out[i] = a[i] + carry;
             if (a[i] == 1 && carry == 1) begin
                 carry = 1;
             end else begin
                 carry = 0;
+            end
+        end
+        if (mode == 0) begin
+            for (i = 9; i < 20; i++)begin
+                out[i] = 0;
             end
         end
 
