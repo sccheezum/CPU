@@ -423,32 +423,32 @@ always @(posedge clk or posedge reset) begin
                         );
                     end
                     GT_OP: begin
-                        gt_ops(
+                        gt_ops x0(
                             .a(alu_src1),
                             .b(alu_src2),
                             .sign(sign_flag)
                         );
                     end
                     LT_OP: begin
-                        lt_ops(
+                        lt_ops x0(
                             .a(alu_src1),
                             .b(alu_src2),
                             .sign(sign_flag)
                         );
                     end
                     GET_OP: begin
-                        get_ops(
+                        get_ops x0(
                             .a(alu_src1),
                             .b(alu_src2),
-                            .sign(alu_result1),
+                            .sign(sign_flag),
                             .zero(zero_flag)
                         );
                     end
                     LET_OP: begin
-                        let_ops(
+                        let_ops x0(
                             .a(alu_src1),
                             .b(alu_src2),
-                            .sign(alu_result1),
+                            .sign(sign_flag),
                             .zero(zero_flag)
                         );
                     end
@@ -461,6 +461,95 @@ always @(posedge clk or posedge reset) begin
                 execute_enable <= 1'b0;
             end
             WRITE_BACK_STATE: begin
+                case (instruction[19:14])
+                    //ALU Opcode
+                    TRAP_OP: begin
+                        // No writeback needed
+                    end
+                    NOP_OP: begin
+                        // No writeback needed
+                    end
+                    JMP_OP: begin
+                        
+                    end
+                    JMPZ_OP: begin
+                        
+                    end
+                    JMPS_OP: begin
+                        
+                    end
+                    JMPZS_OP: begin
+                        
+                    end
+                    LSTAT_OP: begin
+                        
+                    end
+                    XSTAT_OP: begin
+                        
+                    end
+                    NOT_OP: begin
+                        registers[instruction[7:5]] <= alu_result1;
+                    end
+                    AND_OP: begin
+                        registers[instruction[7:5]] <= alu_result1;
+                    end
+                    OR_OP: begin
+                        registers[instruction[7:5]] <= alu_result1;
+                    end
+                    XOR_OP: begin
+                        registers[instruction[7:5]] <= alu_result1;
+                    end
+                    SHFTR_OP: begin
+                        register[instruction[7:5]] <= alu_result1;
+                    end
+                    SHFTL_OP: begin
+                        registers[instruction[7:5]] <= alu_result1;
+                    end
+                    ROTR_OP: begin
+                        registers[instruction[7:5]] <= alu_result1;
+                    end
+                    ROTL_OP: begin
+                        registers[instruction[7:5]] <= alu_result1;
+                    end
+                    SWAP_OP: begin
+                        registers[instruction[7:5]] <= alu_result1;
+                        registers[instruction[4:2]] <= alu_result2;
+                    end
+                    INC_OP: begin
+                        registers[instruction[7:5]] <= alu_result1;
+                    end
+                    DEC_OP: begin
+                        
+                    end
+                    ADD_OP: begin
+                        
+                    end
+                    ADDC_OP: begin
+                        
+                    end
+                    SUB_OP: begin
+                        /
+                    end
+                    SUBC_OP: begin
+                        
+                    end
+                    EQ_OP: begin
+                        // Zero flag?
+                    end
+                    GT_OP: begin
+                        // Sign flag?
+                    end
+                    LT_OP: begin
+                        // Sign flag?
+                    end
+                    GET_OP: begin
+                        // Sign and zero flag?
+                    end
+                    LET_OP: begin
+                        // Sign and zero flag?
+                    end
+                    default: // Handle default case
+                endcase
                 // Write back results to GPR or update PC
                 // Update state and enable next stage
                 state <= FETCH_STATE;

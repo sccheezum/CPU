@@ -4,7 +4,6 @@
 # @author: Michael Cummins
 # @purpose: Localizing all compilations of components of the code
 
-
 all:
 	iverilog -o alu_tb.vvp alu_tb.v
 	vvp alu_tb.vvp -vcd
