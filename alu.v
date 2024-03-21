@@ -362,6 +362,7 @@ module add_wc_ops (
       zero = !(|c);
    end  
 endmodule
+
 //Circuit 4: Add with Carry
 module add_c_ops (
     input mode,
@@ -372,6 +373,7 @@ module add_c_ops (
 //Implementing Complement Subtraction
     assign c = (mode == 0) ? (a[9:0] + b[9:0]) : (a + b);
 endmodule
+
 //Circuit 5: Subtractor without Carry
 module sub_wc_ops (
     input mode, 
@@ -429,6 +431,9 @@ module eq_ops (
     input [19:0] b,
     output zero
 );
+//If the mode is in Half-Word, then it compares the lower 10-bits of the register
+//Otherwise it compares all 20-bits of the register
+//If A = B then the zero flag is 1, otherwise 0
     assign zero = (mode == 0) ? (a[9:0] == b[9:0]) : (a == b);
 endmodule
 
@@ -439,6 +444,10 @@ module gt_ops (
     input [19:0] b,
     output sign
 );
+//If the mode is in Half-Word, then it compares the lower 10-bits of the register
+//Otherwise it compares all 20-bits of the register
+//Because the sign flag is set to 0 if A > B, then taking A <=B where
+//the sign flag is set to 1, satisfies this operation :)
     assign sign = (mode == 0) ? (a[9:0] <= b[9:0]) : (a <= b);
 endmodule
 
@@ -449,6 +458,9 @@ module lt_ops (
     input [19:0] b,
     output sign
 );
+//If the mode is in Half-Word, then it compares the lower 10-bits of the register
+//Otherwise it compares all 20-bits of the register
+//If A < B then the sign flag is set to 1, otherwise 0
     assign sign = (mode == 0) ? (a[9:0] < b[9:0]) : (a < b);
 endmodule
 
@@ -460,6 +472,9 @@ module get_ops (
     output sign,
     output zero
 );
+//If the mode is in Half-Word, then it compares the lower 10-bits of the register
+//Otherwise it compares all 20-bits of the register
+//Since if A >= B then it sets zero to 1, and sign is set to 0 from zero
     assign zero = (mode == 0) ? (a[9:0] >= b[9:0]) : (a >= b);
     assign sign = ~zero;
 endmodule
@@ -472,6 +487,9 @@ module let_ops (
     output sign,
     output zero
 );
+//If the mode is in Half-Word, then it compares the lower 10-bits of the register
+//Otherwise it compares all 20-bits of the register
+//Since if A <= B then both flags are set to 1
     assign sign = (mode == 0) ? (a[9:0] <= b[9:0]) : (a <= b);
     assign zero = sign;
 endmodule
