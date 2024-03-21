@@ -348,7 +348,7 @@ endmodule
 //               ARITHMETIC CLASS OF OPERATIONS              //
 ///////////////////////////////////////////////////////////////
 
-//Circuit 1: Incrementer (Courtesy of Isabelle Son)
+//Circuit 1: Incrementer
 module inc_ops (
     input mode,
     input [19:0] a,
@@ -358,23 +358,16 @@ module inc_ops (
 );
 
     integer i;
-    integer MAX_BITS;
 
     always @(a) begin
-        assign MAX_BITS = (mode == 1) ? (19) : (9);
-        carry = 1;
-        for (i = MAX_BITS; i >= 0; i--) begin
-            out[i] = a[i] + carry;
-            if (a[i] == 1 && carry == 1) begin
-                carry = 1;
-            end else begin
-                carry = 0;
-            end
-        end
-        if (mode == 0) begin
-            for (i = 9; i < 20; i++)begin
-                out[i] = 0;
-            end
+    //If the mode is in Full-Word Mode, then it increments the whole register by 1
+        if (mode == 1) begin
+            out = a + 1;
+    //Otherwise if it is in Half-Word Mode, then it increment the lower register by 1
+    //Then it leaves the upper register as 0;
+        end else begin
+            out[9:0] = a[9:0] + 1;
+            out[19:10] = 0;
         end
 
         zero = !(|out);
@@ -387,33 +380,24 @@ module dec_ops (
     input mode,
     input [19:0] a,
     output reg [19:0] out,
-    output reg carry,
     output reg zero
 );
 
     integer i;
-    integer MAX_BITS;
 
     always @(a) begin
-        MAX_BITS = (mode == 1) ? 19 : 9;
-        carry = 0;
-        for (i = MAX_BITS; i >= 0; i--) begin
-            out[i] = a[i] + carry + 1;
-            if (a[i] == 1 || carry == 1) begin
-                carry = 1;
-            end else begin
-                carry = 0;
-            end
+    //If the mode is in Full-Word Mode, then it increments the whole register by 1
+        if (mode == 1) begin
+            out = a - 1;
+    //Otherwise if it is in Half-Word Mode, then it increment the lower register by 1
+    //Then it leaves the upper register as 0;
+        end else begin
+            out[9:0] = a[9:0] - 1;
+            out[19:10] = 0;
         end
-
-        if (mode == 0) begin
-            for (i = 9; i < 20; i++) begin
-                out[i] = 0;
-            end
-        end
+    
         zero = !(|out);
     end
-
 endmodule
 
 //Circuit 3: Add without Carry
@@ -457,7 +441,6 @@ module add_c_ops (
     input [19:0] b,
     output [19:0] c
 );
-//Implementing Complement Subtraction
     assign c = (mode == 0) ? (a[9:0] + b[9:0]) : (a + b);
 endmodule
 

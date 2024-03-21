@@ -338,7 +338,6 @@ module inc_ops_tb;
     reg mode;
     reg [19:0] a;
     wire [19:0] out;
-    wire carry;
     wire zero;
 
     integer i;
@@ -350,21 +349,20 @@ module inc_ops_tb;
         .mode (mode),
         .a (a),
         .out (out),
-        .carry (carry),
         .zero (zero)
     );
 
     initial begin
         a <= 0;
+        mode <= 0;
 
-        $monitor ("a: %0b - out: %0b - carry: %0b - zero: %0b - mode: %0b", a, out, carry, zero, mode);
+        $monitor ("a: %b - out: %b - zero: %0b - mode: %0b", a, out, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++) begin
             #10 a <= $urandom(SEED);
             mode <= $urandom(SEED);
         end
     end
-
 endmodule
 
 //Circuit 2: Decrementer
@@ -373,7 +371,6 @@ module dec_ops_tb;
     reg mode;
     reg [19:0] a;
     wire [19:0] out;
-    wire carry;
     wire zero;
 
     integer i;
@@ -385,7 +382,6 @@ module dec_ops_tb;
         .mode(mode),
         .a (a),
         .out (out),
-        .carry (carry),
         .zero (zero)
     );
 
@@ -393,14 +389,13 @@ module dec_ops_tb;
         a <= 0;
         mode <= 0;
 
-        $monitor ("a: %0b - out: %b - carry: %0b - zero: %0b - mode: %0b", a, out, carry, zero, mode);
+        $monitor ("a: %0b - out: %b - zero: %0b - mode: %0b", a, out, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++) begin
             #10 a <= $urandom(SEED);
             mode <= $urandom(SEED);
         end
     end
-
 endmodule
 
 //Circuit 3: Add without Carry
