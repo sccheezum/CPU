@@ -370,7 +370,37 @@ module add_wc_ops_tb;
 endmodule
 
 //Circuit 4: Add with Carry
+module add_c_ops_tb;
+    reg mode; //If Mode is 1, then the operation is in full-word mode, otherwise half-word mode
+    reg [19:0] a;
+    reg [19:0] b;
+    wire [19:0] c;
 
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+
+    add_c_ops x0 (
+        .a(a),
+        .b(b),
+        .c(c),
+        .mode(mode)
+    );
+
+    initial begin
+        a <= 0;
+        b <= 0;
+        mode <= 0;
+
+        $monitor ("a: %b - b: %b - c: %b - mode: %b", a, b, c, mode);
+
+        for (i = 0; i < MAX_ITERS; i++)begin
+            #10 a <= $urandom(SEED);
+                b <= $urandom(SEED);
+                mode <= $urandom(SEED);
+        end
+    end
+endmodule
 
 //Circuit 5: Subtractor without Carry
 module sub_wc_ops_tb;
@@ -446,7 +476,6 @@ endmodule
 ///////////////////////////////////////////////////////////////
 
 //Circuit 1: Equal To
-
 module eq_ops_tb;
     reg clk;
     reg mode; //If Mode is 1, then the operation is in full-word mode, otherwise half-word mode
@@ -482,7 +511,6 @@ module eq_ops_tb;
 endmodule
 
 //Circuit 2: Greater Than
-
 module gt_ops_tb;
     reg clk;
     reg mode; //If Mode is 1, then the operation is in full-word mode, otherwise half-word mode
@@ -518,7 +546,6 @@ module gt_ops_tb;
 endmodule
 
 //Circuit 3: Less Than
-
 module lt_ops_tb;
     reg clk;
     reg mode; //If Mode is 1, then the operation is in full-word mode, otherwise half-word mode
@@ -591,7 +618,6 @@ module get_ops_tb;
 endmodule
 
 //Circuit 5: Less Than or Equal To
-
 module let_ops_tb;
     reg clk;
     reg mode;

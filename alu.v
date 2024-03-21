@@ -363,7 +363,15 @@ module add_wc_ops (
    end  
 endmodule
 //Circuit 4: Add with Carry
-
+module add_c_ops (
+    input mode,
+    input [19:0] a,
+    input [19:0] b,
+    output [19:0] c
+);
+//Implementing Complement Subtraction
+    assign c = (mode == 0) ? (a[9:0] + b[9:0]) : (a + b);
+endmodule
 //Circuit 5: Subtractor without Carry
 module sub_wc_ops (
     input mode, 
