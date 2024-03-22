@@ -177,7 +177,6 @@ always @(posedge clk) begin
                 case (instruction[19:14])
                     //ALU Opcode
                     TRAP_OP: begin
-                        // Set the trap_mode_flag high to indicate trap mode
                         trap_mode_flag <= 1'b1;
                         // Disable further execution by setting fetch_enable to 0
                         fetch_enable <= 1'b0;
@@ -189,16 +188,32 @@ always @(posedge clk) begin
                         // No operation, so no specific action needed
                     end
                     JMP_OP: begin
-                        // assign all necessary data
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        alu_src2 <= registers[instruction[10:8]]; // Source register 2 address
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     JMPZ_OP: begin
-                        // assign all necessary data
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        zero_flag <= 1'b0;
+                        alu_src2 <= registers[instruction[10:8]]; // Source register 2 address
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     JMPS_OP: begin
-                        // assign all necessary data
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        sign_flag <= 1'b0;
+                        alu_src2 <= registers[instruction[10:8]]; // Source register 2 address
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     JMPZS_OP: begin
-                        // assign all necessary data
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        zero_flag <= 1'b0;
+                        sign_flag <= 1'b0;
+                        alu_src2 <= registers[instruction[10:8]]; // Source register 2 address
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     LSTAT_OP: begin
                         // assign all necessary data
@@ -300,16 +315,38 @@ always @(posedge clk) begin
                         alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     ADD_OP: begin
-                        // assign all necessary data
+                        alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        alu_src2 <= registers[instruction[10:8]]; // Source register 2 address
+                        alu_result1 <= registers[instruction[7:5]]; // Destination register 1 address
+                        zero_flag = 1'b0;
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     ADDC_OP: begin
-                        // assign all necessary data
+                        alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        alu_src2 <= registers[instruction[10:8]]; // Source register 2 address
+                        alu_result1 <= registers[instruction[7:5]]; // Destination register 1 address
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     SUB_OP: begin
-                        // assign all necessary data
+                        alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        alu_src2 <= registers[instruction[10:8]]; // Source register 2 address
+                        alu_result1 <= registers[instruction[7:5]]; // Destination register 1 address
+                        zero_flag = 1'b0;
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     SUBC_OP: begin
-                        // assign all necessary data
+                        alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        alu_src2 <= registers[instruction[10:8]]; // Source register 2 address
+                        alu_result1 <= registers[instruction[7:5]]; // Destination register 1 address
+
+                        alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     EQ_OP: begin
                         alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
@@ -380,16 +417,36 @@ always @(posedge clk) begin
                             );
                         end
                         JMP_OP: begin
-                            // Handle JMP instruction
+                            jmp_ops xo(
+                                .clk(clk),
+                                .jmp_addr(alu_src1),
+                                .prog_point(alu_src2)
+                            );
                         end
                         JMPZ_OP: begin
-                            // Handle JMPZ instruction
+                            jmpz_ops xo(
+                                .clk(clk),
+                                .jmp_addr(alu_src1),
+                                .zero(zero_flag),
+                                .prog_point(alu_src2)
+                            );
                         end
                         JMPS_OP: begin
-                            // Handle JMPS instruction
+                            jmps_ops xo(
+                                .clk(clk),
+                                .jmp_addr(alu_src1),
+                                .sign(sign_flag),
+                                .prog_point(alu_src2)
+                            );
                         end
                         JMPZS_OP: begin
-                            // Handle JMPZS instruction
+                            jmpzs_ops xo(
+                                .clk(clk),
+                                .jmp_addr(alu_src1),
+                                .zero(zero_flag),
+                                .sign(sign_flag),
+                                .prog_point(alu_src2)
+                            );
                         end
                         LSTAT_OP: begin
                             // Handle LSTAT instruction
@@ -462,6 +519,7 @@ always @(posedge clk) begin
                         end
                         SWAP_OP: begin
                             swap_ops x0 (
+                                .mode(alu_mode),
                                 .a(alu_src1),
                                 .b(alu_src2),
                                 .out_a(alu_result1),
@@ -470,6 +528,7 @@ always @(posedge clk) begin
                         end
                         INC_OP: begin
                             inc_ops x0 (
+                                .mode(alu_mode),
                                 .a(alu_src1),
                                 .out(alu_result1),
                                 .carry(carry_flag_fw),
@@ -478,6 +537,7 @@ always @(posedge clk) begin
                         end
                         DEC_OP: begin
                             dec_ops x0(
+                                .mode(alu_mode),
                                 .a(alu_src1),
                                 .out(alu_result1),
                                 .carry(carry_flag_fw),
@@ -485,19 +545,42 @@ always @(posedge clk) begin
                             );
                         end
                         ADD_OP: begin
-                            // Handle ADD instruction
+                            add_wc_ops x0(
+                                .mode(alu_mode),
+                                .a(alu_src1),
+                                .b(alu_src2),
+                                .c(alu_result1),
+                                .zero(zero_flag)
+                            );
                         end
                         ADDC_OP: begin
-                            // Handle ADDC instruction
+                            add_c_ops x0(
+                                .mode(alu_mode),
+                                .a(alu_src1),
+                                .b(alu_src2),
+                                .c(alu_result1)
+                            );
                         end
                         SUB_OP: begin
-                            // Handle SUB instruction
+                            sub_wc_ops x0(
+                                .mode(alu_mode),
+                                .a(alu_src1),
+                                .b(alu_src2),
+                                .c(alu_result1),
+                                .zero(zero_flag)
+                            );
                         end
                         SUBC_OP: begin
-                            // Handle SUBC instruction
+                            sub_c_ops x0(
+                                .mode(alu_mode),
+                                .a(alu_src1),
+                                .b(alu_src2),
+                                .c(alu_result1)
+                            );
                         end
                         EQ_OP: begin
                             eq_ops x0(
+                                .mode(alu_mode),
                                 .a(alu_src1),
                                 .b(alu_src2),
                                 .zero(zero_flag)
@@ -505,6 +588,7 @@ always @(posedge clk) begin
                         end
                         GT_OP: begin
                             gt_ops x0(
+                                .mode(alu_mode),
                                 .a(alu_src1),
                                 .b(alu_src2),
                                 .sign(sign_flag)
@@ -512,6 +596,7 @@ always @(posedge clk) begin
                         end
                         LT_OP: begin
                             lt_ops x0(
+                                .mode(alu_mode),
                                 .a(alu_src1),
                                 .b(alu_src2),
                                 .sign(sign_flag)
@@ -519,6 +604,7 @@ always @(posedge clk) begin
                         end
                         GET_OP: begin
                             get_ops x0(
+                                .mode(alu_mode),
                                 .a(alu_src1),
                                 .b(alu_src2),
                                 .sign(sign_flag),
@@ -527,6 +613,7 @@ always @(posedge clk) begin
                         end
                         LET_OP: begin
                             let_ops x0(
+                                .mode(alu_mode),
                                 .a(alu_src1),
                                 .b(alu_src2),
                                 .sign(sign_flag),
@@ -551,16 +638,16 @@ always @(posedge clk) begin
                         // No writeback needed
                     end
                     JMP_OP: begin
-                        
+                        // No writeback needed
                     end
                     JMPZ_OP: begin
-                        
+                        // No writeback needed
                     end
                     JMPS_OP: begin
-                        
+                        // No writeback needed
                     end
                     JMPZS_OP: begin
-                        
+                        // No writeback needed
                     end
                     LSTAT_OP: begin
                         
@@ -612,16 +699,18 @@ always @(posedge clk) begin
                         // Zero and Carry flag?
                     end
                     ADD_OP: begin
-                        
+                        registers[instruction[7:5]] <= alu_result1;
+                        // Zero flag?
                     end
                     ADDC_OP: begin
-                        
+                        registers[instruction[7:5]] <= alu_result1;
                     end
                     SUB_OP: begin
-                        
+                        registers[instruction[7:5]] <= alu_result1;
+                        // Zero flag?
                     end
                     SUBC_OP: begin
-                        
+                        registers[instruction[7:5]] <= alu_result1;
                     end
                     EQ_OP: begin
                         // Zero flag?

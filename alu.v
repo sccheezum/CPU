@@ -71,6 +71,7 @@ module jmpzs_ops (
     input clk,
     input [19:0] jmp_addr,
     input zero,
+    input sign,
     output reg [19:0] prog_point
 );
 
