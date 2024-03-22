@@ -177,12 +177,7 @@ always @(posedge clk) begin
                 case (instruction[19:14])
                     //ALU Opcode
                     TRAP_OP: begin
-                        trap_mode_flag <= 1'b1;
-                        // Disable further execution by setting fetch_enable to 0
-                        fetch_enable <= 1'b0;
-                        // Disable further decoding and execution
-                        decode_enable <= 1'b0;
-                        execute_enable <= 1'b0;
+                        //No need to change any values used as they are already assigned.
                     end
                     NOP_OP: begin
                         // No operation, so no specific action needed
@@ -409,7 +404,12 @@ always @(posedge clk) begin
                     case (instruction[19:14])
                         //ALU Opcode
                         TRAP_OP: begin
-                            // Handle TRAP instruction
+                            trap_ops x0(
+                                .clk(clk),
+                                .reset(reset),
+                                .instruction(instruction),
+                                .trap_flag(trap_flag)
+                            );
                         end
                         NOP_OP: begin
                             no_ops x0(
@@ -650,38 +650,31 @@ always @(posedge clk) begin
                         // No writeback needed
                     end
                     LSTAT_OP: begin
-                        
+                        // No writeback needed
                     end
                     XSTAT_OP: begin
-                        
+                        // No writeback needed
                     end
                     NOT_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
-                        // Zero flag?
                     end
                     AND_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
-                        // Zero flag?
                     end
                     OR_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
-                        // Zero flag?
                     end
                     XOR_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
-                        // Zero flag?
                     end
                     SHFTR_OP: begin
                         register[instruction[7:5]] <= alu_result1;
-                        // Zero flag?
                     end
                     SHFTL_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
-                        // Zero and Carry flag?
                     end
                     ROTR_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
-                        // Zero and Carry flag?
                     end
                     ROTL_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
@@ -692,40 +685,36 @@ always @(posedge clk) begin
                     end
                     INC_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
-                        // Zero and Carry flag?
                     end
                     DEC_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
-                        // Zero and Carry flag?
                     end
                     ADD_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
-                        // Zero flag?
                     end
                     ADDC_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
                     end
                     SUB_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
-                        // Zero flag?
                     end
                     SUBC_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
                     end
                     EQ_OP: begin
-                        // Zero flag?
+                        // No writeback needed
                     end
                     GT_OP: begin
-                        // Sign flag?
+                        // No writeback needed
                     end
                     LT_OP: begin
-                        // Sign flag?
+                        // No writeback needed
                     end
                     GET_OP: begin
-                        // Sign and zero flag?
+                        // No writeback needed
                     end
                     LET_OP: begin
-                        // Sign and zero flag?
+                        // No writeback needed
                     end
                 endcase
                 // Write back results to GPR or update PC
