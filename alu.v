@@ -99,12 +99,12 @@ endmodule
 //Circuit 8: XOR Status Register
 module xstat_ops (
     input [12:0] status_reg,
-    input [20:0] current_reg,
+    input [19:0] current_reg,
     input trap_flag, //1 if in TRAP mode, otherwise not
-    output reg [20:0] storage_reg
+    output reg [19:0] storage_reg
 );
     integer i;
-    reg [20:0] temp_reg;
+    reg [19:0] temp_reg;
 
 
     always @(status_reg or current_reg) begin
