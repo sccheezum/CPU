@@ -19,7 +19,7 @@ module trap_ops_tb;
     reg clk;
     reg reset;
     reg [19:0] instruction;
-    wire [19:0] trap_flag;
+    wire trap_flag;
 
     integer i;
     integer MAX_ITERS = 10;
