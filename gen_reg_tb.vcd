@@ -1,5 +1,5 @@
 $date
-	Thu Mar 21 16:46:02 2024
+	Thu Mar 21 22:31:43 2024
 $end
 $version
 	Icarus Verilog
@@ -9,7 +9,7 @@ $timescale
 $end
 $scope module gen_reg_tb $end
 $scope module x0 $end
-$var wire 10 ! addr [9:0] $end
+$var wire 3 ! addr [2:0] $end
 $var wire 2 " addr_sel [1:0] $end
 $var wire 1 # clk $end
 $var wire 20 $ data_in [19:0] $end
@@ -36,9 +36,9 @@ $end
 b10101010101010101010 %
 1#
 #20
+b1 !
 0#
 b11001100110011001100 $
-b1 !
 b1 "
 #25
 b0xxxxxxxxxx %
@@ -49,9 +49,9 @@ b0xxxxxxxxxx %
 b11001100 %
 1#
 #40
+b10 !
 0#
 b11110000111100001111 $
-b10 !
 b10 "
 #45
 b0xxxxxxxxxx %

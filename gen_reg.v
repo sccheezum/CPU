@@ -9,7 +9,7 @@ Ursinus College
 module gen_reg(
     input wire clk,
     input wire [1:0] addr_sel, // Address selection (0 for full, 1 for higher bits, 2 for lower bits)
-    input wire [9:0] addr,     // Address to read/write data
+    input wire [2:0] addr,     // Address to read/write data
     input wire [19:0] data_in,  // Data to be written into register
     output reg [19:0] data_out  // Data read from the selected register
 );
