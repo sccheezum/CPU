@@ -68,16 +68,19 @@ endmodule
 
 //Circuit 6: Jump Zero-Sign
 module jmpzs_ops (
-    input clk,
     input [19:0] jmp_addr,
     input zero,
     input sign,
     output reg [19:0] prog_point
 );
 
-always @(posedge clk) begin
-    if (zero && sign) begin
-        prog_point <= jmp_addr;
+always @(zero or sign) begin
+    if (zero == 1 && sign == 1) begin
+        prog_point = jmp_addr;
+
+//Not Sure What to do here to reset the prog_point back to nothing... ideas?
+    end else begin
+        prog_point = 0;
     end
 end
 
@@ -234,6 +237,7 @@ endmodule
 
 //Circuit 1: Shift Right (Courtesy of Isabelle Son)
 module shftr_ops (
+    input mode,
     input [19:0] a,
     output reg [19:0] out,
     output reg carry,
@@ -241,12 +245,22 @@ module shftr_ops (
 );
 
     integer i;
+    integer CARRY_DIGIT;
+    integer MAX_DIGIT;
 
     always @(a) begin
-        carry = a[19];
+        CARRY_DIGIT = (mode == 1) ? (19) : (9);
+        MAX_DIGIT = (mode == 1) ? (20) : (10);
+        carry = a[CARRY_DIGIT];
         out[0] = 0;
-        for (i = 1; i < 20; i++) begin
+        for (i = 1; i < MAX_DIGIT; i++) begin
             out[i] = a[i-1];
+        end
+    //If in Half Mode, Puts 0's in the Upper Register
+        if (mode == 0) begin
+            for (i = 10; i < 20; i++) begin
+                out[i] = 0;
+            end
         end
 
         zero = !(|out);
@@ -256,6 +270,7 @@ endmodule
 
 //Circuit 2: Shift Left
 module shftl_ops (
+    input mode,
     input [19:0] a,
     output reg [19:0] out,
     output reg carry,
@@ -263,12 +278,20 @@ module shftl_ops (
 );
 
     integer i;
+    integer LAST_DIGIT;
 
     always @(a) begin
+        LAST_DIGIT = (mode == 1) ? (19) : (9);
         carry = a[0];
-        out[19] = 0;
-        for (i = 19; i > 0; i--) begin
+        out[LAST_DIGIT] = 0;
+        for (i = LAST_DIGIT; i > 0; i--) begin
             out[i-1] = a[i];
+        end
+    //If in Half Mode, Puts 0's in the Upper Register
+        if (mode == 0) begin
+            for (i = 10; i < 20; i++) begin
+                out[i] = 0;
+            end
         end
 
         zero = !(|out);
@@ -278,37 +301,55 @@ endmodule
 
 //Circuit 3: Rotate Right
 module rotr_ops (
+    input mode,
     input [19:0] a, 
     output reg [19:0] out
 );
 
     integer i;
+    integer LAST_VALUE;
 
     always @(a) begin 
-    //Setting the last value of the input to the last value of the output
-        out[0] = a[19];
+        LAST_VALUE = (mode == 1) ? (19) : (9);
+    //Setting the last value of the input to the first value of the output
+        out[0] = a[LAST_VALUE];
 
     //Iterating through the rest of the input
-        for (i = 19; i > 0; i--) begin
+        for (i = LAST_VALUE; i > 0; i--) begin
             out[i] = a[i-1];
+        end
+    //If in Half Mode, Puts 0's in the Upper Register
+        if (mode == 0) begin
+            for (i = 10; i < 20; i++) begin
+                out[i] = 0;
+            end
         end
     end
 endmodule
 
 //Circuit 4: Rotate Left
 module rotl_ops (
+    input mode,
     input [19:0] a, 
     output reg [19:0] out
 );
 
     integer i;
+    integer LAST_VALUE;
 
     always @(a) begin 
+        LAST_VALUE = (mode == 1) ? (19) : (9);
     //Setting the first value of the input to the last value of the output
-        out[19] = a[0];
+        out[LAST_VALUE] = a[0];
     //Iterating through the rest of the input
-        for (i = 0; i < 19; i++)begin
+        for (i = 0; i < LAST_VALUE; i++)begin
             out[i] = a[i+1];
+        end
+    //If in Half Mode, Puts 0's in the Upper Register
+        if (mode == 0) begin
+            for (i = 10; i < 20; i++) begin
+                out[i] = 0;
+            end
         end
     end
 endmodule
@@ -349,7 +390,7 @@ endmodule
 //               ARITHMETIC CLASS OF OPERATIONS              //
 ///////////////////////////////////////////////////////////////
 
-//Circuit 1: Incrementer (Courtesy of Isabelle Son)
+//Circuit 1: Incrementer
 module inc_ops (
     input mode,
     input [19:0] a,
@@ -359,23 +400,16 @@ module inc_ops (
 );
 
     integer i;
-    integer MAX_BITS;
 
     always @(a) begin
-        assign MAX_BITS = (mode == 1) ? (19) : (9);
-        carry = 1;
-        for (i = MAX_BITS; i >= 0; i--) begin
-            out[i] = a[i] + carry;
-            if (a[i] == 1 && carry == 1) begin
-                carry = 1;
-            end else begin
-                carry = 0;
-            end
-        end
-        if (mode == 0) begin
-            for (i = 9; i < 20; i++)begin
-                out[i] = 0;
-            end
+    //If the mode is in Full-Word Mode, then it increments the whole register by 1
+        if (mode == 1) begin
+            out = a + 1;
+    //Otherwise if it is in Half-Word Mode, then it increment the lower register by 1
+    //Then it leaves the upper register as 0;
+        end else begin
+            out[9:0] = a[9:0] + 1;
+            out[19:10] = 0;
         end
 
         zero = !(|out);
@@ -388,33 +422,24 @@ module dec_ops (
     input mode,
     input [19:0] a,
     output reg [19:0] out,
-    output reg carry,
     output reg zero
 );
 
     integer i;
-    integer MAX_BITS;
 
     always @(a) begin
-        MAX_BITS = (mode == 1) ? 19 : 9;
-        carry = 0;
-        for (i = MAX_BITS; i >= 0; i--) begin
-            out[i] = a[i] + carry + 1;
-            if (a[i] == 1 || carry == 1) begin
-                carry = 1;
-            end else begin
-                carry = 0;
-            end
+    //If the mode is in Full-Word Mode, then it increments the whole register by 1
+        if (mode == 1) begin
+            out = a - 1;
+    //Otherwise if it is in Half-Word Mode, then it increment the lower register by 1
+    //Then it leaves the upper register as 0;
+        end else begin
+            out[9:0] = a[9:0] - 1;
+            out[19:10] = 0;
         end
-
-        if (mode == 0) begin
-            for (i = 9; i < 20; i++) begin
-                out[i] = 0;
-            end
-        end
+    
         zero = !(|out);
     end
-
 endmodule
 
 //Circuit 3: Add without Carry
@@ -458,7 +483,6 @@ module add_c_ops (
     input [19:0] b,
     output [19:0] c
 );
-//Implementing Complement Subtraction
     assign c = (mode == 0) ? (a[9:0] + b[9:0]) : (a + b);
 endmodule
 

@@ -20,6 +20,37 @@ Ursinus College
 //Circuit 4: Jump Zero
 //Circuit 5: Jump Sign
 //Circuit 6: Jump Zero-Sign
+module jmpzs_ops_tb;
+    reg zero;
+    reg sign;
+    reg [19:0] jmp_addr;
+    wire [19:0] prog_point;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+//Instantiate Circuit
+    jmpzs_ops x0 (
+        .zero(zero),
+        .sign(sign),
+        .jmp_addr(jmp_addr),
+        .prog_point(prog_point)
+    );
+
+    initial begin
+        zero <= 0;
+        sign <= 0;
+        jmp_addr <= 0;
+
+        $monitor ("zero: %b - sign: %b - jmp_addr: %b - prog_point: %b", zero, sign, jmp_addr, prog_point);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 zero <= $urandom(SEED);
+                sign <= $urandom(SEED);
+                jmp_addr <= $urandom(SEED);
+        end
+    end
+endmodule
 //Circuit 7: Load Status Register
 //Circuit 8: XOR Status Register
 
@@ -181,6 +212,7 @@ endmodule
 //Circuit 1: Shift Right
 module shftr_ops_tb;
     reg clk;
+    reg mode;
     reg [19:0] a;
     wire [19:0] out;
     wire carry;
@@ -192,6 +224,7 @@ module shftr_ops_tb;
 
     shftr_ops x0 (
         .a(a),
+        .mode(mode),
         .out(out),
         .carry(carry),
         .zero(zero)
@@ -199,11 +232,13 @@ module shftr_ops_tb;
 
     initial begin
         a <= 0;
-        $monitor ("a: %b - out: %b - carry: %b - zero: %b", a, out, carry, zero);
+        mode <= 0;
+        $monitor ("a: %b - out: %b - carry: %b - zero: %b - mode: %b", a, out, carry, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 
@@ -212,6 +247,7 @@ endmodule
 //Circuit 2: Shift Left
 module shftl_ops_tb;
     reg clk;
+    reg mode;
     reg [19:0] a;
     wire [19:0] out;
     wire carry;
@@ -223,6 +259,7 @@ module shftl_ops_tb;
 
     shftl_ops x0 (
         .a(a),
+        .mode(mode),
         .out(out),
         .carry(carry),
         .zero(zero)
@@ -230,11 +267,13 @@ module shftl_ops_tb;
 
     initial begin
         a <= 0;
-        $monitor ("a: %b - out: %b - carry: %b - zero: %b", a, out, carry, zero);
+        mode <= 0;
+        $monitor ("a: %b - out: %b - carry: %b - zero: %b - mode: %b", a, out, carry, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 endmodule
@@ -242,6 +281,7 @@ endmodule
 //Circuit 3: Rotate Right
 module rotr_ops_tb;
     reg clk;
+    reg mode;
     reg [19:0] a;
     wire [19:0] out;
 
@@ -250,17 +290,20 @@ module rotr_ops_tb;
     integer SEED = 10559;
 
     rotr_ops x0 (
+        .mode(mode),
         .a(a),
         .out(out)
     );
 
     initial begin
         a <= 0;
-        $monitor ("a: %b - out: %b ", a, out);
+        mode <= 0;
+        $monitor ("a: %b - out: %b - mode: %b ", a, out, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 endmodule
@@ -268,6 +311,7 @@ endmodule
 //Circuit 4: Rotate Left
 module rotl_ops_tb;
     reg clk;
+    reg mode;
     reg [19:0] a;
     wire [19:0] out;
 
@@ -276,17 +320,20 @@ module rotl_ops_tb;
     integer SEED = 10559;
 
     rotl_ops x0 (
+        .mode(mode),
         .a(a),
         .out(out)
     );
 
     initial begin
         a <= 0;
-        $monitor ("a: %b - out: %b ", a, out);
+        mode <= 0;
+        $monitor ("a: %b - out: %b - mode: %b", a, out, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
             #10 clk <= ~clk;
                 a <= $urandom(SEED);
+                mode <= $urandom(SEED);
         end
     end
 endmodule
@@ -338,7 +385,6 @@ module inc_ops_tb;
     reg mode;
     reg [19:0] a;
     wire [19:0] out;
-    wire carry;
     wire zero;
 
     integer i;
@@ -350,21 +396,20 @@ module inc_ops_tb;
         .mode (mode),
         .a (a),
         .out (out),
-        .carry (carry),
         .zero (zero)
     );
 
     initial begin
         a <= 0;
+        mode <= 0;
 
-        $monitor ("a: %0b - out: %0b - carry: %0b - zero: %0b - mode: %0b", a, out, carry, zero, mode);
+        $monitor ("a: %b - out: %b - zero: %0b - mode: %0b", a, out, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++) begin
             #10 a <= $urandom(SEED);
             mode <= $urandom(SEED);
         end
     end
-
 endmodule
 
 //Circuit 2: Decrementer
@@ -373,7 +418,6 @@ module dec_ops_tb;
     reg mode;
     reg [19:0] a;
     wire [19:0] out;
-    wire carry;
     wire zero;
 
     integer i;
@@ -385,7 +429,6 @@ module dec_ops_tb;
         .mode(mode),
         .a (a),
         .out (out),
-        .carry (carry),
         .zero (zero)
     );
 
@@ -393,14 +436,13 @@ module dec_ops_tb;
         a <= 0;
         mode <= 0;
 
-        $monitor ("a: %0b - out: %b - carry: %0b - zero: %0b - mode: %0b", a, out, carry, zero, mode);
+        $monitor ("a: %0b - out: %b - zero: %0b - mode: %0b", a, out, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++) begin
             #10 a <= $urandom(SEED);
             mode <= $urandom(SEED);
         end
     end
-
 endmodule
 
 //Circuit 3: Add without Carry
