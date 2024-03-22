@@ -163,7 +163,7 @@ endmodule
 //Circuit 7: Load Status Register
 module lstat_ops_tb;
     reg [12:0] status_reg;
-    wire [20:0] gen_reg;
+    wire [19:0] gen_reg;
 
     integer i;
     integer MAX_ITERS = 10;
