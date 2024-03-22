@@ -28,8 +28,8 @@ module control_unit (
     input wire same_reg_flag,    // Same register flag
     input wire mem_violation_flag, // Memory violation flag
     input wire mem_corruption_flag, // Memory corruption flag
-    input wire trap_mode_flag,   // Trap mode flag
-    input wire [5:0] registers, // General Registers
+    input wire trap_mode_flag,    // Trap mode flag
+    input wire [5:0] registers,   // General Registers
     output wire fetch_enable,     // Enable signal for instruction fetch stage
     output wire decode_enable,    // Enable signal for instruction decode stage
     output wire execute_enable,   // Enable signal for instruction execute stage
