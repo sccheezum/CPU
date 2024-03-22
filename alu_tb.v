@@ -188,9 +188,9 @@ endmodule
 //Circuit 8: XOR Status Register
 module xstat_ops_tb;
     reg [12:0] status_reg;
-    reg [20:0] current_reg;
+    reg [19:0] current_reg;
     reg trap_flag;
-    wire [20:0] storage_reg;
+    wire [19:0] storage_reg;
 
     integer i;
     integer MAX_ITERS = 10;
