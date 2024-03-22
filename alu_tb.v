@@ -15,10 +15,118 @@ Ursinus College
 ///////////////////////////////////////////////////////////
 
 //Circuit 1: Trap Mode
+module trap_ops_tb;
+endmodule
 //Circuit 2: No Operation 
+module no_ops_tb;
+    reg clk;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+//Instantiate Circuit
+    no_ops x0 (
+        .clk(clk)
+    );
+
+    initial begin
+        clk <= 0;
+
+        $monitor ("clk: %b", clk);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 clk <= ~clk;
+        end
+    end
+endmodule
+
 //Circuit 3: Jump Unconditional
+module jmp_ops_tb;
+    reg clk;
+    reg [19:0] jmp_addr;
+    wire [19:0] prog_point;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+    //Instantiate Circuit
+    jmp_ops x0 (
+        .clk(clk),
+        .jmp_addr(jmp_addr),
+        .prog_point(prog_point)
+    );
+
+    initial begin
+        jmp_addr <= 0;
+        clk <= 0;
+
+        $monitor ("clk: %b - jmp_addr: %b - prog_point: %b", clk, jmp_addr, prog_point);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 clk <= ~clk;
+                jmp_addr <= $urandom(SEED);
+        end
+    end
+endmodule
+
 //Circuit 4: Jump Zero
+module jmpz_ops_tb;
+    reg zero;
+    reg [19:0] jmp_addr;
+    wire [19:0] prog_point;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+    //Instantiate Circuit
+    jmpz_ops x0 (
+        .zero(zero),
+        .jmp_addr(jmp_addr),
+        .prog_point(prog_point)
+    );
+
+    initial begin
+        zero <= 0;
+        jmp_addr <= 0;
+
+        $monitor ("zero: %b - jmp_addr: %b - prog_point: %b", zero, jmp_addr, prog_point);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 zero <= $urandom(SEED);
+                jmp_addr <= $urandom(SEED);
+        end
+    end
+endmodule
+
 //Circuit 5: Jump Sign
+module jmps_ops_tb;
+    reg sign;
+    reg [19:0] jmp_addr;
+    wire [19:0] prog_point;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+    //Instantiate Circuit
+    jmps_ops x0 (
+        .sign(sign),
+        .jmp_addr(jmp_addr),
+        .prog_point(prog_point)
+    );
+
+    initial begin
+        sign <= 0;
+        jmp_addr <= 0;
+
+        $monitor ("sign: %b - jmp_addr: %b - prog_point: %b", sign, jmp_addr, prog_point);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 sign <= $urandom(SEED);
+                jmp_addr <= $urandom(SEED);
+        end
+    end
+endmodule
+
 //Circuit 6: Jump Zero-Sign
 module jmpzs_ops_tb;
     reg zero;
@@ -29,7 +137,7 @@ module jmpzs_ops_tb;
     integer i;
     integer MAX_ITERS = 10;
     integer SEED = 10559;
-//Instantiate Circuit
+    //Instantiate Circuit
     jmpzs_ops x0 (
         .zero(zero),
         .sign(sign),
@@ -51,9 +159,64 @@ module jmpzs_ops_tb;
         end
     end
 endmodule
-//Circuit 7: Load Status Register
-//Circuit 8: XOR Status Register
 
+//Circuit 7: Load Status Register
+module lstat_ops_tb;
+    reg [12:0] status_reg;
+    wire [20:0] gen_reg;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+//Instantiate Circuit
+    lstat_ops x0 (
+        .status_reg(status_reg),
+        .gen_reg(gen_reg)
+    );
+
+    initial begin
+        status_reg <= 0;
+
+        $monitor ("status_reg: %b - gen_reg: %b", status_reg, gen_reg);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 status_reg <= $urandom(SEED);
+        end
+    end
+endmodule
+
+//Circuit 8: XOR Status Register
+module xstat_ops_tb;
+    reg [12:0] status_reg;
+    reg [20:0] current_reg;
+    reg trap_flag;
+    wire [20:0] storage_reg;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+//Instantiate Circuit
+    xstat_ops x0 (
+        .status_reg(status_reg),
+        .current_reg(current_reg),
+        .trap_flag(trap_flag),
+        .storage_reg(storage_reg)
+    );
+
+    initial begin
+        status_reg <= 0;
+        current_reg <= 0;
+        trap_flag <= 0;
+
+        $monitor ("status_reg: %b - current_reg: %b - storage_reg: %b - trap_flag: %b", status_reg, current_reg, storage_reg, trap_flag);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 status_reg <= $urandom(SEED);
+            current_reg <= $urandom(SEED);
+            trap_flag <= $urandom(SEED);
+        end
+    end
+endmodule
 
 ////////////////////////////////////////////////////////////
 //               LOGIC CLASS OF OPERATIONS               //

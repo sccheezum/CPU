@@ -12,6 +12,11 @@ Ursinus College
 
 
 //Circuit 1: Trap Mode
+module trap_ops (
+
+);
+endmodule
+
 //Circuit 2: No Operation 
 module no_ops (
     input clk
@@ -28,41 +33,39 @@ module jmp_ops (
     output reg [19:0] prog_point
 );
 
-always @(posedge clk) begin
-    prog_point <= jmp_addr;
-end
+    always @(posedge clk) begin
+        prog_point <= jmp_addr;
+    end
 
 endmodule
 
 //Circuit 4: Jump Zero
 module jmpz_ops (
-    input clk,
     input [19:0] jmp_addr,
     input zero,
     output reg [19:0] prog_point
 );
 
-always @(posedge clk) begin
-    if (zero) begin
-        prog_point <= jmp_addr;
+    always @(zero) begin
+        if (zero) begin
+            prog_point <= jmp_addr;
+        end 
     end
-end
 
 endmodule
 
 //Circuit 5: Jump Sign
 module jmps_ops (
-    input clk,
     input [19:0] jmp_addr,
     input sign,
     output reg [19:0] prog_point
 );
 
-always @(posedge clk) begin
-    if (sign) begin
-        prog_point <= jmp_addr;
+    always @(sign) begin
+        if (sign) begin
+            prog_point <= jmp_addr;
+        end 
     end
-end
 
 endmodule
 
@@ -74,20 +77,48 @@ module jmpzs_ops (
     output reg [19:0] prog_point
 );
 
-always @(zero or sign) begin
-    if (zero == 1 && sign == 1) begin
-        prog_point = jmp_addr;
-
-//Not Sure What to do here to reset the prog_point back to nothing... ideas?
-    end else begin
-        prog_point = 0;
+    always @(zero or sign) begin
+        if (zero == 1 && sign == 1) begin
+            prog_point = jmp_addr;
+        end 
     end
-end
 
 endmodule
 
 //Circuit 7: Load Status Register
+module lstat_ops (
+    input [12:0] status_reg,
+    output reg [19:0] gen_reg
+);
+    always @(status_reg) begin
+        gen_reg[12:0] <= status_reg;
+        gen_reg[19:13] = 0;
+    end
+endmodule
+
 //Circuit 8: XOR Status Register
+module xstat_ops (
+    input [12:0] status_reg,
+    input [20:0] current_reg,
+    input trap_flag, //1 if in TRAP mode, otherwise not
+    output reg [20:0] storage_reg
+);
+    integer i;
+    reg [20:0] temp_reg;
+
+
+    always @(status_reg or current_reg) begin
+        temp_reg[12:0] = status_reg;
+        temp_reg[19:13] = 0;
+        if (trap_flag == 1) begin
+            for (i = 0; i < 20; i++) begin
+                storage_reg[i] = temp_reg[i] ^ current_reg[i];
+            end
+        end else begin
+            storage_reg = 0;
+        end
+    end
+endmodule
 
 
 ////////////////////////////////////////////////////////////
