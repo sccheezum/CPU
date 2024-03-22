@@ -211,10 +211,12 @@ always @(posedge clk) begin
                         alu_op <= 1'b1; // Enable ALU operation for logical negation
                     end
                     LSTAT_OP: begin
-                        // assign all necessary data
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
                     end
                     XSTAT_OP: begin
-                        // assign all necessary data
+                        alu_src1 <= registers[instruction[13:11]]; // Source register 1 address
+                        trap_mode_flag <= 1'b0;
+                        alu_result1 <= registers[instruction[7:5]]; // Destination register 1 address
                     end
                     NOT_OP: begin
                         alu_mode <= instruction[1]; // Bit 1 determines ALU mode (full or half word)
@@ -449,10 +451,18 @@ always @(posedge clk) begin
                             );
                         end
                         LSTAT_OP: begin
-                            // Handle LSTAT instruction
+                            xstat_ops(
+                                .status_reg(status_reg),
+                                .gen_reg(alu_src1)
+                            );
                         end
                         XSTAT_OP: begin
-                            // Handle XSTAT instruction
+                            xstat_ops(
+                                .status_reg(status_reg),
+                                .current_reg(alu_src1),
+                                .trap_flag(trap_mode_flag),
+                                .storage_reg(alu_result1)
+                            );
                         end
                         NOT_OP: begin
                             not_ops x0(
@@ -650,10 +660,10 @@ always @(posedge clk) begin
                         // No writeback needed
                     end
                     LSTAT_OP: begin
-                        // No writeback needed
+                        registers[instruction[7:5]] <= alu_result1;
                     end
                     XSTAT_OP: begin
-                        // No writeback needed
+                        registers[instruction[7:5]] <= alu_result1;
                     end
                     NOT_OP: begin
                         registers[instruction[7:5]] <= alu_result1;
