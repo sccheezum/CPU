@@ -16,6 +16,37 @@ Ursinus College
 
 //Circuit 1: Trap Mode
 module trap_ops_tb;
+    reg clk;
+    reg reset;
+    reg [19:0] instruction;
+    wire [19:0] trap_flag;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10559;
+    //Instantiate Circuit
+    trap_ops x0 (
+        .clk(clk),
+        .reset(reset),
+        .instruction(instruction),
+        .trap_flag(trap_flag)
+    );
+
+    initial begin
+        clk <= 0;
+        reset <= 0;
+        instruction[19:14] <= 6'b000000;
+        instruction[13:0] <= 0;
+
+
+        $monitor ("clk: %b - reset: %b instruction: %b - trap_flag: %b", clk, reset, instruction, trap_flag);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 clk <= ~clk;
+                reset <= $urandom(SEED);
+                instruction <= ~instruction;
+        end
+    end
 endmodule
 //Circuit 2: No Operation 
 module no_ops_tb;

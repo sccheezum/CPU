@@ -13,8 +13,20 @@ Ursinus College
 
 //Circuit 1: Trap Mode
 module trap_ops (
-
+    input clk,
+    input reset,
+    input [19:0] instruction,
+    output reg trap_flag
 );
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            trap_flag <= 0;
+        end else if (instruction[19:14] == 6'b000000) begin
+            trap_flag <= 1;
+        end else begin
+            trap_flag <= 0;
+        end
+    end
 endmodule
 
 //Circuit 2: No Operation 
