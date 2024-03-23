@@ -19,10 +19,10 @@ module trap_ops (
     output reg trap_flag
 );
     always @(posedge clk or posedge reset) begin
-        if (reset) begin
-            trap_flag <= 0;
-        end else if (instruction[19:14] == 6'b000000) begin
+        if (instruction[19:14] == 6'b000000) begin
             trap_flag <= 1;
+        end else if (reset) begin
+            trap_flag <= 0;
         end else begin
             trap_flag <= 0;
         end
