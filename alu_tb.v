@@ -38,7 +38,7 @@ module trap_ops_tb;
         instruction[19:14] <= 6'b000000;
         instruction[13:0] <= 0;
 
-
+        $dumpvars(1,x0);
         $monitor ("clk: %b - reset: %b instruction: %b - trap_flag: %b", clk, reset, instruction, trap_flag);
 
         for (i = 0; i < MAX_ITERS; i++) begin
@@ -63,6 +63,7 @@ module no_ops_tb;
     initial begin
         clk <= 0;
 
+        $dumpvars(1,x0);
         $monitor ("clk: %b", clk);
 
         for (i = 0; i < MAX_ITERS; i++) begin
@@ -91,6 +92,7 @@ module jmp_ops_tb;
         jmp_addr <= 0;
         clk <= 0;
 
+        $dumpvars(1,x0);
         $monitor ("clk: %b - jmp_addr: %b - prog_point: %b", clk, jmp_addr, prog_point);
 
         for (i = 0; i < MAX_ITERS; i++) begin
@@ -120,6 +122,7 @@ module jmpz_ops_tb;
         zero <= 0;
         jmp_addr <= 0;
 
+        $dumpvars(1,x0);
         $monitor ("zero: %b - jmp_addr: %b - prog_point: %b", zero, jmp_addr, prog_point);
 
         for (i = 0; i < MAX_ITERS; i++) begin
@@ -149,6 +152,7 @@ module jmps_ops_tb;
         sign <= 0;
         jmp_addr <= 0;
 
+        $dumpvars(1,x0);
         $monitor ("sign: %b - jmp_addr: %b - prog_point: %b", sign, jmp_addr, prog_point);
 
         for (i = 0; i < MAX_ITERS; i++) begin
@@ -181,6 +185,7 @@ module jmpzs_ops_tb;
         sign <= 0;
         jmp_addr <= 0;
 
+        $dumpvars(1,x0);
         $monitor ("zero: %b - sign: %b - jmp_addr: %b - prog_point: %b", zero, sign, jmp_addr, prog_point);
 
         for (i = 0; i < MAX_ITERS; i++) begin
@@ -208,6 +213,7 @@ module lstat_ops_tb;
     initial begin
         status_reg <= 0;
 
+        $dumpvars(1,x0);
         $monitor ("status_reg: %b - gen_reg: %b", status_reg, gen_reg);
 
         for (i = 0; i < MAX_ITERS; i++) begin
@@ -239,6 +245,7 @@ module xstat_ops_tb;
         current_reg <= 0;
         trap_flag <= 0;
 
+        $dumpvars(1,x0);
         $monitor ("status_reg: %b - current_reg: %b - storage_reg: %b - trap_flag: %b", status_reg, current_reg, storage_reg, trap_flag);
 
         for (i = 0; i < MAX_ITERS; i++) begin
@@ -275,6 +282,7 @@ module not_ops_tb;
     initial begin
         a <= 0;
         mode <= 0;
+
 
         $dumpfile("alu_tb");
         $dumpvars(1,x0);
@@ -314,7 +322,8 @@ module and_ops_tb;
         b <= 0;
         mode <= 0;
 
-    $monitor ("a: %b - b: %b - c: %b - zero: %b - mode: %b", a, b, c, zero, mode);
+        $dumpvars(1,x0);
+        $monitor ("a: %b - b: %b - c: %b - zero: %b - mode: %b", a, b, c, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
             #10 clk <= ~clk;
@@ -351,6 +360,7 @@ module or_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - c: %b - zero: %b - mode: %b", a, b, c, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
@@ -388,6 +398,7 @@ module xor_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - c: %b - zero: %b - mode: %b", a, b, c, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
@@ -427,6 +438,8 @@ module shftr_ops_tb;
     initial begin
         a <= 0;
         mode <= 0;
+
+        $dumpvars(1,x0);
         $monitor ("a: %b - out: %b - carry: %b - zero: %b - mode: %b", a, out, carry, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
@@ -462,6 +475,8 @@ module shftl_ops_tb;
     initial begin
         a <= 0;
         mode <= 0;
+
+        $dumpvars(1,x0);
         $monitor ("a: %b - out: %b - carry: %b - zero: %b - mode: %b", a, out, carry, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
@@ -492,6 +507,8 @@ module rotr_ops_tb;
     initial begin
         a <= 0;
         mode <= 0;
+
+        $dumpvars(1,x0);
         $monitor ("a: %b - out: %b - mode: %b ", a, out, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
@@ -522,6 +539,8 @@ module rotl_ops_tb;
     initial begin
         a <= 0;
         mode <= 0;
+
+        $dumpvars(1,x0);
         $monitor ("a: %b - out: %b - mode: %b", a, out, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
@@ -558,6 +577,7 @@ module swap_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpvars(1,x0);
         $monitor ("a: %b - b: %b  - out_a: %b - out_b: %b - mode: %b", a, b, out_a, out_b, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
@@ -597,6 +617,7 @@ module inc_ops_tb;
         a <= 0;
         mode <= 0;
 
+        $dumpvars(1,x0);
         $monitor ("a: %b - out: %b - zero: %0b - mode: %0b", a, out, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++) begin
@@ -630,6 +651,7 @@ module dec_ops_tb;
         a <= 0;
         mode <= 0;
 
+        $dumpvars(1,x0);
         $monitor ("a: %0b - out: %b - zero: %0b - mode: %0b", a, out, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++) begin
@@ -664,6 +686,7 @@ module add_wc_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - c: %b - zero: %b - mode: %b", a, b, c, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
@@ -697,6 +720,7 @@ module add_c_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - c: %b - mode: %b", a, b, c, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
@@ -732,6 +756,7 @@ module sub_wc_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - c: %b - zero: %b - mode: %b", a, b, c, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
@@ -765,6 +790,7 @@ module sub_c_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - c: %b - mode: %b", a, b, c, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
@@ -804,6 +830,7 @@ module eq_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - zero: %b - mode - %b", a, b, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
@@ -839,6 +866,7 @@ module gt_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - sign: %b - mode: %b", a, b, sign, mode);
 
         for (i = 0; i < MAX_ITERS; i++) begin
@@ -874,6 +902,7 @@ module lt_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - sign: %b - mode: %b", a, b, sign, mode);
 
         for (i = 0; i < MAX_ITERS; i++) begin
@@ -911,6 +940,7 @@ module get_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - sign: %b - zero: %b - mode: %b", a, b, sign, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
@@ -948,6 +978,7 @@ module let_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - sign: %b - zero: %b - mode: %b", a, b, sign, zero, mode);
 
         for (i = 0; i < MAX_ITERS; i++)begin
