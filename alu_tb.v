@@ -38,6 +38,7 @@ module trap_ops_tb;
         instruction[19:14] <= 6'b000000;
         instruction[13:0] <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("clk: %b - reset: %b instruction: %b - trap_flag: %b", clk, reset, instruction, trap_flag);
 
@@ -63,6 +64,7 @@ module no_ops_tb;
     initial begin
         clk <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("clk: %b", clk);
 
@@ -92,6 +94,7 @@ module jmp_ops_tb;
         jmp_addr <= 0;
         clk <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("clk: %b - jmp_addr: %b - prog_point: %b", clk, jmp_addr, prog_point);
 
@@ -122,6 +125,7 @@ module jmpz_ops_tb;
         zero <= 0;
         jmp_addr <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("zero: %b - jmp_addr: %b - prog_point: %b", zero, jmp_addr, prog_point);
 
@@ -152,6 +156,7 @@ module jmps_ops_tb;
         sign <= 0;
         jmp_addr <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("sign: %b - jmp_addr: %b - prog_point: %b", sign, jmp_addr, prog_point);
 
@@ -185,6 +190,7 @@ module jmpzs_ops_tb;
         sign <= 0;
         jmp_addr <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("zero: %b - sign: %b - jmp_addr: %b - prog_point: %b", zero, sign, jmp_addr, prog_point);
 
@@ -213,6 +219,7 @@ module lstat_ops_tb;
     initial begin
         status_reg <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("status_reg: %b - gen_reg: %b", status_reg, gen_reg);
 
@@ -245,6 +252,7 @@ module xstat_ops_tb;
         current_reg <= 0;
         trap_flag <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("status_reg: %b - current_reg: %b - storage_reg: %b - trap_flag: %b", status_reg, current_reg, storage_reg, trap_flag);
 
@@ -282,7 +290,6 @@ module not_ops_tb;
     initial begin
         a <= 0;
         mode <= 0;
-
 
         $dumpfile("alu_tb");
         $dumpvars(1,x0);
@@ -322,6 +329,7 @@ module and_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - c: %b - zero: %b - mode: %b", a, b, c, zero, mode);
 
@@ -360,6 +368,7 @@ module or_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - c: %b - zero: %b - mode: %b", a, b, c, zero, mode);
 
@@ -398,6 +407,7 @@ module xor_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - c: %b - zero: %b - mode: %b", a, b, c, zero, mode);
 
@@ -439,6 +449,7 @@ module shftr_ops_tb;
         a <= 0;
         mode <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("a: %b - out: %b - carry: %b - zero: %b - mode: %b", a, out, carry, zero, mode);
 
@@ -476,6 +487,7 @@ module shftl_ops_tb;
         a <= 0;
         mode <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("a: %b - out: %b - carry: %b - zero: %b - mode: %b", a, out, carry, zero, mode);
 
@@ -508,6 +520,7 @@ module rotr_ops_tb;
         a <= 0;
         mode <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("a: %b - out: %b - mode: %b ", a, out, mode);
 
@@ -540,6 +553,7 @@ module rotl_ops_tb;
         a <= 0;
         mode <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("a: %b - out: %b - mode: %b", a, out, mode);
 
@@ -577,6 +591,7 @@ module swap_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("a: %b - b: %b  - out_a: %b - out_b: %b - mode: %b", a, b, out_a, out_b, mode);
 
@@ -617,6 +632,7 @@ module inc_ops_tb;
         a <= 0;
         mode <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("a: %b - out: %b - zero: %0b - mode: %0b", a, out, zero, mode);
 
@@ -651,6 +667,7 @@ module dec_ops_tb;
         a <= 0;
         mode <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("a: %0b - out: %b - zero: %0b - mode: %0b", a, out, zero, mode);
 
@@ -686,6 +703,7 @@ module add_wc_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - c: %b - zero: %b - mode: %b", a, b, c, zero, mode);
 
@@ -720,6 +738,7 @@ module add_c_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - c: %b - mode: %b", a, b, c, mode);
 
@@ -756,6 +775,7 @@ module sub_wc_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - c: %b - zero: %b - mode: %b", a, b, c, zero, mode);
 
@@ -790,6 +810,7 @@ module sub_c_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - c: %b - mode: %b", a, b, c, mode);
 
@@ -830,6 +851,7 @@ module eq_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - zero: %b - mode - %b", a, b, zero, mode);
 
@@ -866,6 +888,7 @@ module gt_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - sign: %b - mode: %b", a, b, sign, mode);
 
@@ -902,6 +925,7 @@ module lt_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - sign: %b - mode: %b", a, b, sign, mode);
 
@@ -940,6 +964,7 @@ module get_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - sign: %b - zero: %b - mode: %b", a, b, sign, zero, mode);
 
@@ -978,6 +1003,7 @@ module let_ops_tb;
         b <= 0;
         mode <= 0;
 
+        $dumpfile("alu_tb");
         $dumpvars(1,x0);
         $monitor ("a: %b - b: %b - sign: %b - zero: %b - mode: %b", a, b, sign, zero, mode);
 
